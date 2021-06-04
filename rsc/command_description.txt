@@ -1,0 +1,20 @@
+Allgemeine Hilfe;
+Hilfe für Mittwoch;
+Hilfe für Roulette;
+Hilfe für Kopf oder Zahl;
+Startet das Spiel Roulette,
+"!" als Teiler verwenden
+Werte sind "s" für Schwarz, "r" für Rot, oder eine Zahl;
+sendet eine Nachricht an den Nutzeraccount;
+sendet manuell das Meme in den Kanal, vor allem zum Testen empfohlen;
+Setzt den Kanal, in den das Meme gesendet werden soll;
+Löscht den Kanal, in dem das Meme gesendet werden soll;
+Schreibt irgendein Zitat;
+Spielt Kopf oder Zahl mit "!" als Teiler und "1" oder "0" als Kopf oder Zahl;
+Zeigt allgemeine Informationen über den Bot.;
+Zeigt an, in welchem Kanal das Mittwochmeme pfostiert wird.;
+Zeigt diese Nachricht;
+Setzt einen Webhook zu r/ich_iel und r/de;
+Löscht den Webhhook;
+Zeigt den Webhook-Kanal;
+Zeigt die Latenz des Bots an.;

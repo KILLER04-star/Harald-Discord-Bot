@@ -1,0 +1,18 @@
+$help;
+$help -mittwoch;
+$help -roulette;
+$help -koz;
+$roulette;
+$private hilfe;
+$bot -mittwoch -fire;
+$setzkanal;
+$delkanal;
+$z;
+$koz;
+$about;
+$kanal;
+$show_commands;
+$setz_webhook;
+$del_webhook;
+$webhook;
+$ping;

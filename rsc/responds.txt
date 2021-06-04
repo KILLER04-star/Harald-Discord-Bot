@@ -1,0 +1,85 @@
+Für Roulette: $help -roulette
+Für Mittwoch: $help -mittwoch
+Für Kopf oder Zahl: $help -koz
+Impressum: $about;
+$bot -mittwoch -fire um das Meme manuel zu starten
+$setzKanal um den Kanal für Maimais zu definieren
+$kanal, um den eingestellten (Text)Kanal auszugeben;
+Für Roulette: $roulette BID eingeben, wobei Bid = black/ red/ Zahl;
+Für Kopf oder Zahl: $koz!Bid für Bid = 0 oder 1;
+Ungültige Eingabe;
+$$$ Gewonnen $$$;
+Wie kann ich dir helfen?;
+Automatisches Löschen von Nachrichten aktiviert;
+Automatisches Löschen von Nachrichten deaktiviert;
+Kanal gesetzt!;
+Beep Bop, Kanal geändert;
+Für diesen Server konnte der Kanal nicht geändert werden.;
+Der Bot ;
+wurde von https://github.com/KILLER04-star programmiert.
+Der Code ist unter https://github.com/KILLER04-star/Harald zu finden.;
+Oh oh Es sieht so aus, als wenn hier nich kein Kanal eingestellt wurde.
+Benutze $setzkanal, um einen Kanal einzustellen. Achte auch darauf, dass ich alle nötigen Berechtigungen habe;
+Der Kanal für diesen Server ist: ;
+Fehler ;
+ ist aufgetreten.;
+Fehler;
+Datenbankfehler;
+Führe $help für Hilfe aus;
+Fehlercode;
+Hilfe;
+Diese Fehlermeldung wurde automatisch generiert.;
+Bist du dir sicher, dass der Bot alle benötigten Rechte auf dem Sever hat und du den Befehl richtig eingegeben hast?;
+Ein Fehler ist aufgetreten.;
+Harald;
+Kanal geändert!;
+Beep bop, Kanal geändert;
+~Haudi meine Kerle~;
+Für Roulette;
+Für Mittwoch;
+Für Kopf oder Zahl;
+Impressum;
+Erstmal eine Übersicht;
+Hilfe - Mittwoch;
+Alle Befehle für das Mittwoch - Maimai;
+Kanal einstellen;
+Mit diesem Befehl lässt sich auch ein schon eingestellter Kanal ändern.;
+Maimai manuell pfostieren;
+Dient vor allem als Test, ob der Bot die nötigen Rechte besitzt;
+Um den eingestellten Kanal herauszufinden;
+Manch einer ist vielleicht etwas vergesslich...;
+Hier hilft: ;
+Hilfe - Kopf oder Zahl;
+Alle Befehle für Kopf oder Zahl;
+spielen;
+mit ! als Teiler und 0 oder 1 als Zahl;
+Hilfe - Roulette;
+Alle Befehle für Roulette;
+mit ! als Teiler und s für schwarz oder r für rot oder Zahl;
+Gewonnen!;
+$$$$$$$$$$$$$$$$$$;
+Zitat des Tages;
+Der Kanal für diesen Server ist;
+Kein Kanal;
+Entwickler;
+https://github.com/KILLER04-star/;
+Bot;
+https://github.com/KILLER04-star/Harald;
+ist privates Open-Source Projekt.;
+Befehle;
+Hier ist eine Liste aller Befehle;
+Zeigt eine Liste aller Befehle;
+mit den Kerlen;
+Sie haben nicht die Berechtigung, um den Befehl auszuführen!;
+Kanal gelöscht!;
+Fehler;
+Kanal konnte nicht gelöscht werden;
+Berechtigung fehlt;
+Nur ein Administrator kann diesen Befehl ausführen;
+Du denkst, dass ein Fehler vorliegt?;
+Dann kontaktiere bitte einen Administrator, welcher dir die nötigen Rechte bereitstellt.;
+Der Kanal wurde erfolgreich entfernt;
+Der Webhook wurde erfolgreich eingestellt.;
+Latenz;
+Ihr wünscht meine Latenz zu erfahren?;
+Nun sie beträgt ;
