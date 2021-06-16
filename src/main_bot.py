@@ -634,11 +634,12 @@ class MyClient(discord.Client):
                     print("Sent: "+str(self.get_server_status(server_id)))
                 index += 1
                 success = True
+                self.update_server_status(server_id, success, notes)
         except Exception as e:
             notes = str(e)
             self.log_error(e, "")
-
-        self.update_server_status(server_id, success, notes)
+            
+        
 
     def update_server_status(self, server_id, status, notes):
         c = conn.cursor()
@@ -673,7 +674,7 @@ class MyClient(discord.Client):
 
         c.execute('SELECT Sent FROM Status WHERE Server_id=?', server_id)
         try:
-            result = bool(str((c.fetchone()).replace("[", "").replace("(", "").
+            result = bool(str(str((c.fetchone())).replace("[", "").replace("(", "").
                       replace("'", "").replace(",", "").replace(")", "").replace("]", "")))
         except Exception as e:
             self.log_error(e, "")
