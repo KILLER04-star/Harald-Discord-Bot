@@ -19,6 +19,9 @@ global reddit_clientid
 global reddit_clientSecret
 global reddit_useragent
 
+import requests
+import json
+
 global discord_token
 
 global bot_link
@@ -63,6 +66,7 @@ class MyClient(discord.Client):
     subs = []
 
     async def on_ready(self):
+
         print("Ich habe mich eingeloggt. Beep Bop.")
 
         global auto_delete
@@ -265,7 +269,6 @@ class MyClient(discord.Client):
 
                     await message.channel.send(
                         embed=embed)
-
 
             elif message.content.lower().startswith("$z"):
                 file = open("../rsc/quotes.txt", 'r', encoding="utf8")
@@ -615,31 +618,33 @@ class MyClient(discord.Client):
         success = False
         data = self.get_data("Info")
 
-        notes = "none"
+        notes = str("Last_Updated: "+str(datetime.datetime.today()))
 
         server_id = 0
 
         index = 0
-        try:
-            for i in data:
+
+        for i in data:
+            try:
                 info = data[index]
+
                 channel_id = int(self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
+
                 channel = client.get_channel(channel_id)
+
                 server_id = int(
                     str(self.decode(str(info).replace("'", "").split(",")[0].replace("(", "").replace(")", ""))))
                 guild_role = client.get_guild(server_id).roles[0]
-                if not self.get_server_status(server_id):
+
+                if (self.get_server_status(server_id)) == "0":
+                    print("Sending on server: "+str(server_id)+" Time: "+str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
-                else:
-                    print("Sent: "+str(self.get_server_status(server_id)))
-                index += 1
-                success = True
-                self.update_server_status(server_id, success, notes)
-        except Exception as e:
-            notes = str(e)
-            self.log_error(e, "")
-            
-        
+                    self.update_server_status(server_id, True, notes)
+                index = index + 1
+            except Exception as e:
+                notes = str(e)
+                self.log_error(e, "")
+
 
     def update_server_status(self, server_id, status, notes):
         c = conn.cursor()
@@ -651,6 +656,8 @@ class MyClient(discord.Client):
 
         conn.commit()
 
+        print(str("Deleting Data for "+self.encode(server_id)+" Time: "+str(datetime.datetime.today())))
+
         self.set_server_status(const_server_id, status, notes)
 
 
@@ -661,6 +668,7 @@ class MyClient(discord.Client):
         server_id = self.encode(server_id)
         server_id = (server_id,)
 
+        print("Delete Server Status: "+str(datetime.datetime.today()))
         c.execute('DELETE FROM Status WHERE Server_id=?', server_id)
 
         conn.commit()
@@ -674,14 +682,16 @@ class MyClient(discord.Client):
 
         c.execute('SELECT Sent FROM Status WHERE Server_id=?', server_id)
         try:
-            result = bool(str(str((c.fetchone())).replace("[", "").replace("(", "").
+            result = (str(str((c.fetchone())).replace("[", "").replace("(", "").
                       replace("'", "").replace(",", "").replace(")", "").replace("]", "")))
         except Exception as e:
             self.log_error(e, "")
+        print(str("Result: "+str(result)))
         return result
 
     def set_server_status(self, server_id, status, notes):
         global conn
+
         c = conn.cursor()
 
         server_id = self.encode(server_id)
@@ -691,6 +701,8 @@ class MyClient(discord.Client):
         c.execute('INSERT INTO Status VALUES (?,?,?)', values)
 
         conn.commit()
+
+        print("Setting Status for: "+server_id + " Time: "+str(datetime.datetime.today()))
 
 
     def get_sub_names(self):
@@ -776,7 +788,8 @@ class MyClient(discord.Client):
         server_ids = self.get_all_servers()
 
         for i in server_ids:
-            self.update_server_status(i, "False", "Last_Updated: "+str(datetime.datetime.today()))
+            self.update_server_status(i, "0", "Last_Updated: "+str(datetime.datetime.today()))
+            print(str("Updating for: "+self.encode(i) +" Time: "+str(datetime.datetime.today())))
 
     def get_all_servers(self):
         global conn
@@ -793,15 +806,16 @@ class MyClient(discord.Client):
         minute = datetime.datetime.today().minute
         global trigger_day
         global isWednesday
+
         if str(day) == str(int(int(trigger_day) - 1)) and sent_available:
             isWednesday = True
             await self.send_meme()
             sent_available = False
+
         elif str(day) != str(int(int(trigger_day) - 1)):
             isWednesday = False
             sent_available = True
             self.reset_server_status()
-         #   self.get_all_channels()
 
         if minute % 50 == 0 and minute > 0:
             index = 0
