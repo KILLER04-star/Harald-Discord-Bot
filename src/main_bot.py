@@ -4,6 +4,8 @@ import discord
 import random
 import sqlite3
 
+from discord import message
+
 import datetime
 
 from sqlite3 import Error
@@ -13,6 +15,7 @@ import sys
 
 import praw
 from discord.ext import commands
+from discord_slash import SlashCommand, SlashContext
 import configparser
 global reddit
 global reddit_clientid
@@ -24,13 +27,14 @@ import json
 
 global discord_token
 
+from discord import client
+
 global bot_link
 bot_link = "https://github.com/KILLER04-star/Harald-Discord-Bot"
 global bot_error_link
 bot_error_link = "https://github.com/KILLER04-star/Harald-Discord-Bot/issues"
 global bot_author_link
 bot_author_link = "https://github.com/KILLER04-star"
-
 
 class MyClient(discord.Client):
     # Login
@@ -42,7 +46,8 @@ class MyClient(discord.Client):
     global discord_token
     discord_token = keys[0]
     global bot
-    bot = commands.Bot(command_prefix="$")
+    bot = commands.Bot(command_prefix="$",intents=discord.Intents.all())
+    slash = SlashCommand(bot)
     global bot_author
     bot_author = open('../private/author.txt',encoding="utf8").read()
     global commands_list
@@ -56,6 +61,8 @@ class MyClient(discord.Client):
     webhook_counter = 0
     global isWednesday
     isWednesday = False
+
+    global context
 
     global reddit
     reddit = praw.Reddit(client_id=config.get('praw', 'reddit_client_id'), client_secret=config.get('praw','reddit_client_secret'),
@@ -81,6 +88,9 @@ class MyClient(discord.Client):
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
 
+
+
+
     # On_Message_Received
     async def on_message(self, message):
         try:
@@ -88,6 +98,7 @@ class MyClient(discord.Client):
             global commands_list
             global responds
             global descriptions
+            global context
 
 
             descriptions = open("../rsc/command_description.txt", 'r', encoding="utf8").read().split(";")
@@ -98,20 +109,9 @@ class MyClient(discord.Client):
             if message.author.bot:
                 return
 
-            if message.content.lower() == commands[0]:
-                embed = discord.Embed(title=responds[22], colour=discord.Colour(0xffffff),
-                                      url=bot_link,
-                                      description=responds[34])
-
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                embed.add_field(name=commands[13], value=responds[63])
-                embed.add_field(name=responds[30], value=commands[2])
-                embed.add_field(name=responds[31], value=commands[1])
-                embed.add_field(name=responds[32], value=commands[3])
-                embed.add_field(name=responds[33], value=commands[11])
-                await message.channel.send(embed=embed)
+            if message.content.lower() == commands[0]: #Funktionen müssen nur Embeds generieren und zurückgeben, nicht die Nachricht senden!
+                help_embed = self.help()
+                await message.channel.send(embed=help_embed)
 
             if message.content.lower().startswith("$help -mittwoch"):
                 embed = discord.Embed(title=responds[35], colour=discord.Colour(0xffffff),
@@ -537,6 +537,25 @@ class MyClient(discord.Client):
             index += 1
         await guild.text_channels[0].send(embed=embed)
 
+    def help(self):
+        global commands_list
+        embed = discord.Embed(title=responds[22], colour=discord.Colour(0xffffff),
+                              url=bot_link,
+                              description=responds[34])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        embed.add_field(name=commands_list[13], value=responds[63])
+        embed.add_field(name=responds[30], value=commands_list[2])
+        embed.add_field(name=responds[31], value=commands_list[1])
+        embed.add_field(name=responds[32], value=commands_list[3])
+        embed.add_field(name=responds[33], value=commands_list[11])
+
+        return embed
+
+
+
     def create_connection(self, db_file):
         # opens a connection to a sqlite-database containing necessary
         # information about the servers, like in which channel the bot is supposed to send memes
@@ -734,7 +753,7 @@ class MyClient(discord.Client):
 
         for i in data:
             try:
-                info = data[index]
+                info = i
                 channel_id = int(
                     self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
                 channel = client.get_channel(channel_id)
@@ -846,5 +865,79 @@ class MyClient(discord.Client):
         file.close()
         print(str(datetime.datetime.today()) + " " + message)
 
-client = MyClient()
-client.run(discord_token)  # Manuell das Token einfügen | vor jedem Commit und Jedem Push unbedingt entfernen!
+client = MyClient(intents=discord.Intents.all())
+slash = SlashCommand(client, sync_commands=True)
+@slash.slash(name="help")
+async def _help(ctx):
+    embed = MyClient.help(MyClient)
+    await ctx.send(embed=embed)
+
+@slash.slash(name="help_mittwoch")
+async def _help_mittwoch(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="help_roulette")
+async def _help_roulette(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="help_koz")
+async def _help_koz(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="roulette")
+async def _roulette(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="private_hilfe")
+async def _private_hilfe(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="bot_mittwoch_fire")
+async def _bot_mittwoch_fire(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="setzkanal")
+async def _setzkanal(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="delkanal")
+async def _delkanal(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="z")
+async def _z(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="koz")
+async def _koz(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="about")
+async def _about(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="kanal")
+async def _kanal(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="show_commands")
+async def _show_commands(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="setz_webhook")
+async def _setz_webhook(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="del_webhook")
+async def _del_webhook(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="webhook")
+async def _webhook(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+@slash.slash(name="ping")
+async def _ping(ctx): # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+
+client.run(discord_token)
