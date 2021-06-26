@@ -64,7 +64,7 @@ Kein Kanal;
 Entwickler;
 https://github.com/KILLER04-star/;
 Bot;
-https://github.com/KILLER04-star/Harald;
+https://github.com/KILLER04-star/Harald-Discord-Bot;
 ist privates Open-Source Projekt.;
 Befehle;
 Hier ist eine Liste aller Befehle;

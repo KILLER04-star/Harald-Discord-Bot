@@ -233,15 +233,8 @@ class MyClient(discord.Client):
                         embed=embed)
 
             elif message.content.lower().startswith("$z"):
-                file = open("../rsc/quotes.txt", 'r', encoding="utf8")
-                messages = file.read().split(";")
-                val = random.randint(0, len(messages) - 1)
-                embed = discord.Embed(title=responds[53], colour=discord.Colour(0x3400ff),
-                                      url=bot_link, description=messages[val])
 
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.z())
 
             elif message.content.lower().startswith("$koz"):
                 bid = int(message.content.lower().split("!")[1])
@@ -261,18 +254,8 @@ class MyClient(discord.Client):
                     await message.channel.send(file=discord.File('../rsc/gestern.jpg'))
 
             elif message.content.lower().startswith("$about"):
-                myid = '<@792004795703623691>'
-                embed = discord.Embed(title=responds[33], colour=discord.Colour(0x32ff),
-                                      url=bot_link,
-                                      description=responds[12] + myid + responds[60])
 
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                embed.add_field(name=responds[58], value=responds[59])
-                embed.add_field(name=responds[56], value=responds[57])
-
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.about())
 
             elif message.content.lower().startswith("$kanal"):
                 channel = self.get_channel_of_server(conn, message.guild.id, "Info")
@@ -299,18 +282,7 @@ class MyClient(discord.Client):
                 await self.send_meme()
             elif message.content.lower().startswith("$show_commands"):
 
-                index = 0
-                embed = discord.Embed(title=responds[61], colour=discord.Colour(0xffffff),
-                                      url=bot_link,
-                                      description=responds[62])
-
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                while index < 18:
-                    embed.insert_field_at(name=commands[index], value=descriptions[index], index=index)
-                    index += 1
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.show_commands())
 
             elif message.content.lower().startswith("$delkanal"):
                 try:
@@ -562,6 +534,50 @@ class MyClient(discord.Client):
 
         embed.add_field(name=responds[46], value=commands[9] + responds[47])
         embed.add_field(name=responds[33], value=commands[10])
+        return embed
+
+    def z(self):
+
+        file = open("../rsc/quotes.txt", 'r', encoding="utf8")
+        messages = file.read().split(";")
+        val = random.randint(0, len(messages) - 1)
+        embed = discord.Embed(title=responds[53], colour=discord.Colour(0x3400ff),
+                              url=bot_link, description=messages[val])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        return embed
+
+    def about(self):
+        myid = '<@792004795703623691>'
+        embed = discord.Embed(title=responds[33], colour=discord.Colour(0x32ff),
+                              url=bot_link,
+                              description=responds[12] + myid + responds[60])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        embed.add_field(name=responds[58], value=responds[59])
+        embed.add_field(name=responds[56], value=responds[57])
+
+        return embed
+
+    def show_commands(self):
+        global commands_list
+        commands = commands_list
+
+        index = 0
+        embed = discord.Embed(title=responds[61], colour=discord.Colour(0xffffff),
+                              url=bot_link,
+                              description=responds[62])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        while index < 18:
+            embed.insert_field_at(name=commands[index], value=descriptions[index], index=index)
+            index += 1
         return embed
                                                                                 ### end of embed generating ###
 
@@ -930,7 +946,7 @@ async def _delkanal(ctx):  # Defines a new "context" (ctx) command called "ping.
 
 @slash.slash(name="z")
 async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send(embed=MyClient.z(MyClient))
 
 
 @slash.slash(name="koz")
@@ -940,7 +956,7 @@ async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
 
 @slash.slash(name="about")
 async def _about(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send(embed=MyClient.about(MyClient))
 
 
 @slash.slash(name="kanal")
@@ -950,7 +966,7 @@ async def _kanal(ctx):  # Defines a new "context" (ctx) command called "ping."
 
 @slash.slash(name="show_commands")
 async def _show_commands(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send(MyClient.show_commands(MyClient))
 
 
 @slash.slash(name="setz_webhook")
@@ -971,6 +987,5 @@ async def _webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
 @slash.slash(name="ping")
 async def _ping(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(f"Pong! ({client.latency * 1000}ms)")
-
 
 client.run(discord_token)
