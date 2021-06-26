@@ -4,8 +4,6 @@ import discord
 import random
 import sqlite3
 
-from discord import message
-
 import datetime
 
 from sqlite3 import Error
@@ -17,13 +15,11 @@ import praw
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
 import configparser
+
 global reddit
 global reddit_clientid
 global reddit_clientSecret
 global reddit_useragent
-
-import requests
-import json
 
 global discord_token
 
@@ -36,6 +32,7 @@ bot_error_link = "https://github.com/KILLER04-star/Harald-Discord-Bot/issues"
 global bot_author_link
 bot_author_link = "https://github.com/KILLER04-star"
 
+
 class MyClient(discord.Client):
     # Login
     config = configparser.ConfigParser()
@@ -46,10 +43,10 @@ class MyClient(discord.Client):
     global discord_token
     discord_token = keys[0]
     global bot
-    bot = commands.Bot(command_prefix="$",intents=discord.Intents.all())
+    bot = commands.Bot(command_prefix="$", intents=discord.Intents.all())
     slash = SlashCommand(bot)
     global bot_author
-    bot_author = open('../private/author.txt',encoding="utf8").read()
+    bot_author = open('../private/author.txt', encoding="utf8").read()
     global commands_list
     commands_list = open("../rsc/commands.txt", 'r', encoding="utf8").read().split(";")
     global responds
@@ -65,7 +62,8 @@ class MyClient(discord.Client):
     global context
 
     global reddit
-    reddit = praw.Reddit(client_id=config.get('praw', 'reddit_client_id'), client_secret=config.get('praw','reddit_client_secret'),
+    reddit = praw.Reddit(client_id=config.get('praw', 'reddit_client_id'),
+                         client_secret=config.get('praw', 'reddit_client_secret'),
                          user_agent=config.get('praw', 'reddit_user_agent'))
     global sub
 
@@ -88,9 +86,6 @@ class MyClient(discord.Client):
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
 
-
-
-
     # On_Message_Received
     async def on_message(self, message):
         try:
@@ -100,7 +95,6 @@ class MyClient(discord.Client):
             global descriptions
             global context
 
-
             descriptions = open("../rsc/command_description.txt", 'r', encoding="utf8").read().split(";")
             commands = commands_list
 
@@ -109,50 +103,18 @@ class MyClient(discord.Client):
             if message.author.bot:
                 return
 
-            if message.content.lower() == commands[0]: #Funktionen müssen nur Embeds generieren und zurückgeben, nicht die Nachricht senden!
-                help_embed = self.help()
-                await message.channel.send(embed=help_embed)
+            if message.content.lower() == commands[0]:  # Funktionen müssen nur Embeds generieren und zurückgeben, nicht die Nachricht senden!
+                await message.channel.send(embed=self.help())
 
             if message.content.lower().startswith("$help -mittwoch"):
-                embed = discord.Embed(title=responds[35], colour=discord.Colour(0xffffff),
-                                      url=bot_link, description=responds[36])
-
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                embed.add_field(name=responds[37],
-                                value=commands[7] + "\n" + responds[38])
-                embed.add_field(name=responds[39],
-                                value=commands[6] + "\n" + responds[40])
-                embed.add_field(name=responds[41],
-                                value=responds[42] + "\n" + responds[43] + commands[12])
-                embed.add_field(name=responds[33], value=commands[11])
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.help_mittwoch())
 
             if message.content.lower().startswith("$help -roulette"):
-                embed = discord.Embed(title=responds[48], colour=discord.Colour(0xffffff),
-                                      url=bot_link,
-                                      description=responds[49])
-
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                embed.add_field(name=responds[46],
-                                value=commands[4] + "\n" + responds[50])
-                embed.add_field(name=responds[33], value=commands[11])
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.help_roulette())
 
             if message.content.lower().startswith("$help -koz"):
-                embed = discord.Embed(title=responds[44], colour=discord.Colour(0xffffff),
-                                      url=bot_link,
-                                      description=responds[45])
 
-                embed.set_author(name=responds[26], url=bot_link)
-                embed.set_footer(text=responds[29])
-
-                embed.add_field(name=responds[46], value=commands[9] + responds[47])
-                embed.add_field(name=responds[33], value=commands[10])
-                await message.channel.send(embed=embed)
+                await message.channel.send(embed=self.help_koz())
 
             if message.content.startswith("$roulette"):
                 bid = message.content.split('!')[1]
@@ -537,6 +499,8 @@ class MyClient(discord.Client):
             index += 1
         await guild.text_channels[0].send(embed=embed)
 
+                                                                        ### start of embed generating ###
+
     def help(self):
         global commands_list
         embed = discord.Embed(title=responds[22], colour=discord.Colour(0xffffff),
@@ -554,7 +518,52 @@ class MyClient(discord.Client):
 
         return embed
 
+    def help_mittwoch(self):
+        global commands_list
+        commands = commands_list
+        embed = discord.Embed(title=responds[35], colour=discord.Colour(0xffffff),
+                              url=bot_link, description=responds[36])
 
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        embed.add_field(name=responds[37],
+                        value=commands[7] + "\n" + responds[38])
+        embed.add_field(name=responds[39],
+                        value=commands[6] + "\n" + responds[40])
+        embed.add_field(name=responds[41],
+                        value=responds[42] + "\n" + responds[43] + commands[12])
+        embed.add_field(name=responds[33], value=commands[11])
+        return embed
+
+    def help_roulette(self):
+        global commands_list
+        commands = commands_list
+        embed = discord.Embed(title=responds[48], colour=discord.Colour(0xffffff),
+                              url=bot_link,
+                              description=responds[49])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        embed.add_field(name=responds[46],
+                        value=commands[4] + "\n" + responds[50])
+        embed.add_field(name=responds[33], value=commands[11])
+        return embed
+    def help_koz(self):
+        global commands_list
+        commands = commands_list
+        embed = discord.Embed(title=responds[44], colour=discord.Colour(0xffffff),
+                              url=bot_link,
+                              description=responds[45])
+
+        embed.set_author(name=responds[26], url=bot_link)
+        embed.set_footer(text=responds[29])
+
+        embed.add_field(name=responds[46], value=commands[9] + responds[47])
+        embed.add_field(name=responds[33], value=commands[10])
+        return embed
+                                                                                ### end of embed generating ###
 
     def create_connection(self, db_file):
         # opens a connection to a sqlite-database containing necessary
@@ -624,6 +633,7 @@ class MyClient(discord.Client):
         conn.commit()
 
         self.delete_server_status(server_id=server_id)
+
     def get_data(self, table):
         global conn
 
@@ -637,7 +647,7 @@ class MyClient(discord.Client):
         success = False
         data = self.get_data("Info")
 
-        notes = str("Last_Updated: "+str(datetime.datetime.today()))
+        notes = str("Last_Updated: " + str(datetime.datetime.today()))
 
         server_id = 0
 
@@ -647,7 +657,8 @@ class MyClient(discord.Client):
             try:
                 info = data[index]
 
-                channel_id = int(self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
+                channel_id = int(
+                    self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
 
                 channel = client.get_channel(channel_id)
 
@@ -656,14 +667,13 @@ class MyClient(discord.Client):
                 guild_role = client.get_guild(server_id).roles[0]
 
                 if (self.get_server_status(server_id)) == "0":
-                    print("Sending on server: "+str(server_id)+" Time: "+str(datetime.datetime.today()))
+                    print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
                     self.update_server_status(server_id, True, notes)
                 index = index + 1
             except Exception as e:
                 notes = str(e)
                 self.log_error(e, "")
-
 
     def update_server_status(self, server_id, status, notes):
         c = conn.cursor()
@@ -675,11 +685,9 @@ class MyClient(discord.Client):
 
         conn.commit()
 
-        print(str("Deleting Data for "+self.encode(server_id)+" Time: "+str(datetime.datetime.today())))
+        print(str("Deleting Data for " + self.encode(server_id) + " Time: " + str(datetime.datetime.today())))
 
         self.set_server_status(const_server_id, status, notes)
-
-
 
     def delete_server_status(self, server_id):
         global conn
@@ -687,7 +695,7 @@ class MyClient(discord.Client):
         server_id = self.encode(server_id)
         server_id = (server_id,)
 
-        print("Delete Server Status: "+str(datetime.datetime.today()))
+        print("Delete Server Status: " + str(datetime.datetime.today()))
         c.execute('DELETE FROM Status WHERE Server_id=?', server_id)
 
         conn.commit()
@@ -702,10 +710,10 @@ class MyClient(discord.Client):
         c.execute('SELECT Sent FROM Status WHERE Server_id=?', server_id)
         try:
             result = (str(str((c.fetchone())).replace("[", "").replace("(", "").
-                      replace("'", "").replace(",", "").replace(")", "").replace("]", "")))
+                          replace("'", "").replace(",", "").replace(")", "").replace("]", "")))
         except Exception as e:
             self.log_error(e, "")
-        print(str("Result: "+str(result)))
+        print(str("Result: " + str(result)))
         return result
 
     def set_server_status(self, server_id, status, notes):
@@ -721,8 +729,7 @@ class MyClient(discord.Client):
 
         conn.commit()
 
-        print("Setting Status for: "+server_id + " Time: "+str(datetime.datetime.today()))
-
+        print("Setting Status for: " + server_id + " Time: " + str(datetime.datetime.today()))
 
     def get_sub_names(self):
         global conn
@@ -762,7 +769,10 @@ class MyClient(discord.Client):
 
                 while index < 27:
                     global reddit
-                    subs.append(reddit.subreddit(str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")", "").replace(" ", "")))
+                    subs.append(reddit.subreddit(
+                        str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
+                                                                                                         "").replace(
+                            " ", "")))
 
                     sub = random.choice(subs)
 
@@ -790,7 +800,6 @@ class MyClient(discord.Client):
             except Exception as e:
                 self.log_error(e, "")
 
-
     def get_channel_of_server(self, conn, server_id, table):
         c = conn.cursor()
         server_id = self.encode(server_id)
@@ -807,15 +816,18 @@ class MyClient(discord.Client):
         server_ids = self.get_all_servers()
 
         for i in server_ids:
-            self.update_server_status(i, "0", "Last_Updated: "+str(datetime.datetime.today()))
-            print(str("Updating for: "+self.encode(i) +" Time: "+str(datetime.datetime.today())))
+            self.update_server_status(i, "0", "Last_Updated: " + str(datetime.datetime.today()))
+            print(str("Updating for: " + self.encode(i) + " Time: " + str(datetime.datetime.today())))
 
     def get_all_servers(self):
         global conn
         ids = []
         c = conn.cursor()
         c.execute('SELECT Server_id FROM Info')
-        server_id = self.decode(str(c.fetchall()).replace("[","").replace("]","").replace("'","").replace("(","").replace(")","").replace(",",""))
+        server_id = self.decode(
+            str(c.fetchall()).replace("[", "").replace("]", "").replace("'", "").replace("(", "").replace(")",
+                                                                                                          "").replace(
+                ",", ""))
         ids.append(server_id)
         return ids
 
@@ -858,86 +870,107 @@ class MyClient(discord.Client):
 
     def log_error(self, exception, message):
         exc_type, exc_obj, exc_tb = sys.exc_info()
-        message = str("Error_Code: " + str(exception) + "\nError_Type: " + str(exc_type) + "\nLine: " + str(exc_tb.tb_lineno) + "\nMessage: "+str(message))
+        message = str("Error_Code: " + str(exception) + "\nError_Type: " + str(exc_type) + "\nLine: " + str(
+            exc_tb.tb_lineno) + "\nMessage: " + str(message))
         file = open("../log/errorlog.txt", "a+", encoding="utf-8")
         file.write('\n' + "-------------------------------" + '\n')
         file.write(str(datetime.datetime.today()) + " " + message)
         file.close()
         print(str(datetime.datetime.today()) + " " + message)
 
+
 client = MyClient(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
+
+
 @slash.slash(name="help")
 async def _help(ctx):
-    embed = MyClient.help(MyClient)
-    await ctx.send(embed=embed)
+    await ctx.send(embed=MyClient.help(MyClient))
+
 
 @slash.slash(name="help_mittwoch")
-async def _help_mittwoch(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _help_mittwoch(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(embed=MyClient.help_mittwoch(MyClient))
+
 
 @slash.slash(name="help_roulette")
-async def _help_roulette(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _help_roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(embed=MyClient.help_roulette(MyClient))
+
 
 @slash.slash(name="help_koz")
-async def _help_koz(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _help_koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(embed=MyClient.help_koz(MyClient))
+
 
 @slash.slash(name="roulette")
-async def _roulette(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="private_hilfe")
-async def _private_hilfe(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _private_hilfe(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="bot_mittwoch_fire")
-async def _bot_mittwoch_fire(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _bot_mittwoch_fire(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="setzkanal")
-async def _setzkanal(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _setzkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="delkanal")
-async def _delkanal(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _delkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="z")
-async def _z(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="koz")
-async def _koz(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="about")
-async def _about(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _about(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="kanal")
-async def _kanal(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _kanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="show_commands")
-async def _show_commands(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _show_commands(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="setz_webhook")
-async def _setz_webhook(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _setz_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="del_webhook")
-async def _del_webhook(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _del_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="webhook")
-async def _webhook(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 @slash.slash(name="ping")
-async def _ping(ctx): # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency*1000}ms)")
+async def _ping(ctx):  # Defines a new "context" (ctx) command called "ping."
+    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+
 
 client.run(discord_token)
