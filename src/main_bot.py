@@ -33,6 +33,7 @@ global bot_author_link
 bot_author_link = "https://github.com/KILLER04-star"
 
 
+
 class MyClient(discord.Client):
     # Login
     config = configparser.ConfigParser()
@@ -426,12 +427,8 @@ class MyClient(discord.Client):
                     await message.channel.send(embed=embed)
                     self.log_error(e, message.content.lower())
             elif message.content.lower().startswith("$ping"):
-                embed = discord.Embed(title=responds[75], color=discord.colour.Color.magenta(),
-                                      url=bot_link, description=responds[76])
-                embed.add_field(name=responds[75], value=responds[77] + str(client.latency * 1000) + " ms.")
-                embed.set_author(name=responds[26])
-                embed.set_footer(text=responds[29])
-                await message.channel.send(embed=embed)
+
+                await message.channel.send(embed=self.ping())
 
 
 
@@ -578,6 +575,14 @@ class MyClient(discord.Client):
         while index < 18:
             embed.insert_field_at(name=commands[index], value=descriptions[index], index=index)
             index += 1
+        return embed
+
+    def ping(self):
+        embed = discord.Embed(title=responds[75], color=discord.colour.Color.magenta(),
+                              url=bot_link, description=responds[76])
+        embed.add_field(name=responds[75], value=responds[77] + str(client.latency * 1000) + " ms.")
+        embed.set_author(name=responds[26])
+        embed.set_footer(text=responds[29])
         return embed
                                                                                 ### end of embed generating ###
 
@@ -921,27 +926,27 @@ async def _help_koz(ctx):  # Defines a new "context" (ctx) command called "ping.
 
 @slash.slash(name="roulette")
 async def _roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="private_hilfe")
 async def _private_hilfe(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="bot_mittwoch_fire")
 async def _bot_mittwoch_fire(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="setzkanal")
 async def _setzkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="delkanal")
 async def _delkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="z")
@@ -951,7 +956,7 @@ async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
 
 @slash.slash(name="koz")
 async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="about")
@@ -961,7 +966,7 @@ async def _about(ctx):  # Defines a new "context" (ctx) command called "ping."
 
 @slash.slash(name="kanal")
 async def _kanal(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="show_commands")
@@ -971,21 +976,21 @@ async def _show_commands(ctx):  # Defines a new "context" (ctx) command called "
 
 @slash.slash(name="setz_webhook")
 async def _setz_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="del_webhook")
 async def _del_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="webhook")
 async def _webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
 @slash.slash(name="ping")
 async def _ping(ctx):  # Defines a new "context" (ctx) command called "ping."
-    await ctx.send(f"Pong! ({client.latency * 1000}ms)")
+    await ctx.send(embed=MyClient.ping(MyClient))
 
 client.run(discord_token)
