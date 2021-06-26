@@ -17,7 +17,7 @@ Beep Bop, Kanal geändert;
 Für diesen Server konnte der Kanal nicht geändert werden.;
 Der Bot ;
 wurde von https://github.com/KILLER04-star programmiert.
-Der Code ist unter https://github.com/KILLER04-star/Harald zu finden.;
+Der Code ist unter https://github.com/KILLER04-star/Harald-Discord-Bot zu finden.;
 Oh oh Es sieht so aus, als wenn hier nich kein Kanal eingestellt wurde.
 Benutze $setzkanal, um einen Kanal einzustellen. Achte auch darauf, dass ich alle nötigen Berechtigungen habe;
 Der Kanal für diesen Server ist: ;
