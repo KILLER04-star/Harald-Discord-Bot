@@ -14,6 +14,7 @@ import sys
 import praw
 from discord.ext import commands
 from discord_slash import SlashCommand, SlashContext
+from discord_slash.utils.manage_commands import create_option
 import configparser
 
 global reddit
@@ -72,11 +73,8 @@ class MyClient(discord.Client):
     subs = []
 
     async def on_ready(self):
-
         print("Ich habe mich eingeloggt. Beep Bop.")
 
-        global auto_delete
-        auto_delete = False
         global conn
         conn = self.create_connection(r'../private/info.db')
         self.create_tables(conn)
@@ -104,7 +102,7 @@ class MyClient(discord.Client):
             if message.author.bot:
                 return
 
-            if message.content.lower() == commands[0]:  # Funktionen müssen nur Embeds generieren und zurückgeben, nicht die Nachricht senden!
+            if message.content.lower() == commands[0]:  
                 await message.channel.send(embed=self.help())
 
             if message.content.lower().startswith("$help -mittwoch"):
@@ -874,7 +872,6 @@ class MyClient(discord.Client):
             while index <= 3:
                 index = index + 1
                 await self.webhook()
-        #   await self.wait()
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 
@@ -903,93 +900,102 @@ class MyClient(discord.Client):
 client = MyClient(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 
+descriptions = open('../rsc/command_description.txt','r',encoding="utf8").read().split(";")
 
-@slash.slash(name="help")
+@slash.slash(name="help",description=descriptions[0])
 async def _help(ctx):
     await ctx.send(embed=MyClient.help(MyClient))
 
 
-@slash.slash(name="help_mittwoch")
+@slash.slash(name="help_mittwoch",description=descriptions[1])
 async def _help_mittwoch(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.help_mittwoch(MyClient))
 
 
-@slash.slash(name="help_roulette")
+@slash.slash(name="help_roulette",description=descriptions[2])
 async def _help_roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.help_roulette(MyClient))
 
 
-@slash.slash(name="help_koz")
+@slash.slash(name="help_koz",description=descriptions[3])
 async def _help_koz(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.help_koz(MyClient))
 
 
-@slash.slash(name="roulette")
+@slash.slash(name="roulette",description=descriptions[4])
 async def _roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="private_hilfe")
+@slash.slash(name="private_hilfe",description=descriptions[5])
 async def _private_hilfe(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="bot_mittwoch_fire")
+@slash.slash(name="bot_mittwoch_fire",description=descriptions[6])
 async def _bot_mittwoch_fire(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="setzkanal")
+@slash.slash(name="setzkanal",description=descriptions[7])
 async def _setzkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="delkanal")
+@slash.slash(name="delkanal",description=descriptions[8])
 async def _delkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="z")
+@slash.slash(name="z",description=descriptions[9])
 async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.z(MyClient))
 
 
-@slash.slash(name="koz")
-async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="koz",description=descriptions[10],
+             options=[
+               create_option(
+                 name="optone",
+                 description="This is the first option we have.",
+                 option_type=3,
+                 required=False
+               )])
+async def _koz(ctx, optone: str):  # Defines a new "context" (ctx) command called "ping."
+    print(f"I got you, you said {optone}!")
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="about")
+@slash.slash(name="about",description=descriptions[11])
 async def _about(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.about(MyClient))
 
 
-@slash.slash(name="kanal")
+@slash.slash(name="kanal",description=descriptions[12])
 async def _kanal(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="show_commands")
+@slash.slash(name="show_commands",description=descriptions[13])
 async def _show_commands(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(MyClient.show_commands(MyClient))
 
 
-@slash.slash(name="setz_webhook")
+@slash.slash(name="setz_webhook",description=descriptions[14])
 async def _setz_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="del_webhook")
+@slash.slash(name="del_webhook",description=descriptions[15])
 async def _del_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="webhook")
+@slash.slash(name="webhook",description=descriptions[16])
 async def _webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="ping")
+@slash.slash(name="ping",description=descriptions[17])
 async def _ping(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.ping(MyClient))
 
