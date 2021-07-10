@@ -78,7 +78,7 @@ class MyClient(discord.Client):
         self.create_tables(conn)
         global responds
         global trigger_day
-        trigger_day = 6
+        trigger_day = 3
         print("The bot will be triggered on the " + str(trigger_day) + ". day of the week.")
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
