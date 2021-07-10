@@ -275,8 +275,12 @@ class MyClient(discord.Client):
                     embed.set_footer(text=responds[29])
                     await message.channel.send(embed=embed)
 
-            elif message.content.lower().startswith("$see_data") and bot_author == str(message.author):
+            elif message.content.lower().startswith("$send_meme_manual") and bot_author == str(message.author): #triggers the sending of the meme manually
                 await self.send_meme()
+            elif message.content.lower().startswith("$status") and bot_author == str(message.author): #Sends a message containing the status of the meme-sending of the server
+                await message.channel.send(self.get_server_status(message.guild.id))
+
+
             elif message.content.lower().startswith("$show_commands"):
 
                 await message.channel.send(embed=self.show_commands())
