@@ -33,8 +33,6 @@ bot_error_link = "https://github.com/KILLER04-star/Harald-Discord-Bot/issues"
 global bot_author_link
 bot_author_link = "https://github.com/KILLER04-star"
 
-
-
 class MyClient(discord.Client):
     # Login
     config = configparser.ConfigParser()
@@ -80,7 +78,7 @@ class MyClient(discord.Client):
         self.create_tables(conn)
         global responds
         global trigger_day
-        trigger_day = 3
+        trigger_day = 6
         print("The bot will be triggered on the " + str(trigger_day) + ". day of the week.")
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
@@ -685,7 +683,8 @@ class MyClient(discord.Client):
                     str(self.decode(str(info).replace("'", "").split(",")[0].replace("(", "").replace(")", ""))))
                 guild_role = client.get_guild(server_id).roles[0]
 
-                if (self.get_server_status(server_id)) == "0":
+                status = self.get_server_status(server_id=server_id)
+                if status == "0":
                     print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
                     self.update_server_status(server_id, True, notes)
