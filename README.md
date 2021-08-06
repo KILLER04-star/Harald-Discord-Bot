@@ -101,6 +101,7 @@ Funktionen:
         "$ping" : Zeigt die Latenz des Bots an.
 
 Aufsetzen des Bots auf einem RaspBerry Pi: 
+
     Software-Anforderungen:
     Python Version 3.7, oder höher
     Cronjob

@@ -116,8 +116,6 @@ class MyClient(discord.Client):
             if message.content.startswith("$roulette"):
                 bid = message.content.split('!')[1]
 
-                bid_param = -3
-
                 if bid.lower() == "s":
                     bid_param = -1
 
@@ -791,29 +789,33 @@ class MyClient(discord.Client):
             self.log_error(e, "")
         randomsub = random.choice(allsubs)
 
-        while not self.is_image(randomsub.url):
+        if not self.is_image(randomsub.url):
             randomsub = random.choice(allsubs)
-        name = randomsub.title
-        url = randomsub.url
-        print(url)
-        for i in data:
-            try:
-                info = i
-                channel_id = int(
-                    self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
-                channel = client.get_channel(channel_id)
+            allowed = False
+        else:
+            allowed = True
+        if allowed:
+            name = randomsub.title
+            url = randomsub.url
+            print(url)
+            for i in data:
+                try:
+                    info = i
+                    channel_id = int(
+                        self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
+                    channel = client.get_channel(channel_id)
 
 
-                em = discord.Embed(
-                    title=name,
-                    color=discord.Color.blurple()
-                )
-                #  em.add_field(name="Beschreibung:", value=str(sub.description))
-                em.set_footer(text="r/" + str(sub.display_name))
-                em.set_image(url=url)
-                await channel.send(embed=em)
-            except Exception as e:
-                self.log_error(e, "")
+                    em = discord.Embed(
+                        title=name,
+                        color=discord.Color.blurple()
+                    )
+                    #  em.add_field(name="Beschreibung:", value=str(sub.description))
+                    em.set_footer(text="r/" + str(sub.display_name))
+                    em.set_image(url=url)
+                    await channel.send(embed=em)
+                except Exception as e:
+                    self.log_error(e, "")
 
     def get_channel_of_server(self, conn, server_id, table):
         c = conn.cursor()
