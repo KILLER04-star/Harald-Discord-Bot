@@ -665,26 +665,19 @@ class MyClient(discord.Client):
         return c.fetchall()
 
     async def send_meme(self):
-        success = False
         data = self.get_data("Info")
 
         notes = str("Last_Updated: " + str(datetime.datetime.today()))
 
-        server_id = 0
-
-        index = 0
-
         for i in data:
             try:
-                info = data[index]
-
                 channel_id = int(
-                    self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
+                    self.decode(str(i).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
 
                 channel = client.get_channel(channel_id)
 
                 server_id = int(
-                    str(self.decode(str(info).replace("'", "").split(",")[0].replace("(", "").replace(")", ""))))
+                    str(self.decode(str(i).replace("'", "").split(",")[0].replace("(", "").replace(")", ""))))
                 guild_role = client.get_guild(server_id).roles[0]
 
                 status = self.get_server_status(server_id=server_id)
@@ -692,7 +685,6 @@ class MyClient(discord.Client):
                     print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
                     self.update_server_status(server_id, True, notes)
-                index = index + 1
             except Exception as e:
                 notes = str(e)
                 self.log_error(e, "")
