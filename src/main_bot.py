@@ -768,8 +768,26 @@ class MyClient(discord.Client):
         sub_names = self.get_sub_names()
 
         index = 0
+        global reddit
+        subs = []
+        range =  random.randint(0, 27)
+        while index < range:
+            subs.append(reddit.subreddit(
+                str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
+                                                                                                 "").replace(
+                    " ", "")))
 
-        global isWednesday, sub
+            sub = random.choice(subs)
+
+            index = index + 1
+
+        top = sub.top(limit=1000)
+        allsubs = []
+
+        for submission in top:
+            allsubs.append(submission)
+
+        global isWednesday
         try:
             if isWednesday:
                 sub_names.append("ich_iel")
@@ -779,7 +797,13 @@ class MyClient(discord.Client):
                 sub_names.remove("de")
         except Exception as e:
             self.log_error(e, "")
+        randomsub = random.choice(allsubs)
 
+        while not self.is_image(randomsub.url):
+            randomsub = random.choice(allsubs)
+        name = randomsub.title
+        url = randomsub.url
+        print(url)
         for i in data:
             try:
                 info = i
@@ -787,29 +811,7 @@ class MyClient(discord.Client):
                     self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
                 channel = client.get_channel(channel_id)
 
-                index = 0
 
-                while index < 27:
-                    global reddit
-                    subs.append(reddit.subreddit(
-                        str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
-                                                                                                         "").replace(
-                            " ", "")))
-
-                    sub = random.choice(subs)
-
-                    index = index + 1
-
-                top = sub.top(limit=1000)
-                allsubs = []
-
-                for submission in top:
-                    allsubs.append(submission)
-
-                randomsub = random.choice(allsubs)
-
-                name = randomsub.title
-                url = randomsub.url
                 em = discord.Embed(
                     title=name,
                     color=discord.Color.blurple()
@@ -818,7 +820,6 @@ class MyClient(discord.Client):
                 em.set_footer(text="r/" + str(sub.display_name))
                 em.set_image(url=url)
                 await channel.send(embed=em)
-                index += 1
             except Exception as e:
                 self.log_error(e, "")
 
@@ -833,6 +834,12 @@ class MyClient(discord.Client):
             "]", ""))
         result = int(self.decode(str(result)))
         return result
+
+    def is_image(self, url):
+        if ".jpg" in url or ".png" in url or ".jpeg" in url:
+            return True
+        else:
+            return False
 
     def reset_server_status(self):
         server_ids = self.get_all_servers()
@@ -872,7 +879,7 @@ class MyClient(discord.Client):
 
         if minute % 50 == 0 and minute > 0:
             index = 0
-            while index <= 3:
+            while index <= 2:
                 index = index + 1
                 await self.webhook()
         await asyncio.sleep(15)
@@ -955,16 +962,10 @@ async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
     await ctx.send(embed=MyClient.z(MyClient))
 
 
-@slash.slash(name="koz",description=descriptions[10],
-             options=[
-               create_option(
-                 name="optone",
-                 description="This is the first option we have.",
-                 option_type=3,
-                 required=False
-               )])
-async def _koz(ctx, optone: str):  # Defines a new "context" (ctx) command called "ping."
-    print(f"I got you, you said {optone}!")
+@slash.slash(name="koz",description=descriptions[10])
+
+async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+    print(f"I got you, you said !")
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
