@@ -116,6 +116,7 @@ Aufsetzen des Bots auf einem RaspBerry Pi:
     Es wird empfohlen, pip für die Installation der Bibliotheken zu verwenden.
 
 Versteckte Ordner und Dateien: 
+
     Aufgrund der Sicherheit wurden einige Dateien und Ordner nicht in die Versionskontrolle eingebunden.
     Dazu zählen:
     Ordner: log
@@ -128,6 +129,7 @@ Versteckte Ordner und Dateien:
     Info.db: Datenbankdatei für die Selbstverwaltung des Bots.
 
 Datenbankstruktur:
+
 Tabellen:
 Info:
 enthält server_id (primary key) und channel_id eines Servers für das Senden des Mittwoch-Maimais
@@ -137,6 +139,8 @@ Webhook-Channels
 enthält server_id (primary key) und channel_id eines Servers für das Senden von anderen Maimais
 sub_names
 eine Liste aller Subreddits für das Senden der anderen Maimais
+
+Routine: 
 
 Der Pi sollte alle 24h einmal neu gestartet werden (Cronjob eignet sich hierfür).
 Um den Bot automatisch zu starten folgende Befehle ausführen:
