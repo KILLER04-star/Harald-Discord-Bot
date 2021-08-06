@@ -130,32 +130,32 @@ Versteckte Ordner und Dateien:
 
 Datenbankstruktur:
 
-Tabellen:
-Info:
-enthält server_id (primary key) und channel_id eines Servers für das Senden des Mittwoch-Maimais
-Status
-enthält server_id (primary key), Status des Mittwoch-Maimais und Notizen (z.B.: Fehler beim Senden, letzte Sendezeit)
-Webhook-Channels 
-enthält server_id (primary key) und channel_id eines Servers für das Senden von anderen Maimais
-sub_names
-eine Liste aller Subreddits für das Senden der anderen Maimais
+    Tabellen:
+    Info:
+    enthält server_id (primary key) und channel_id eines Servers für das Senden des Mittwoch-Maimais
+    Status
+    enthält server_id (primary key), Status des Mittwoch-Maimais und Notizen (z.B.: Fehler beim Senden, letzte Sendezeit)
+    Webhook-Channels 
+    enthält server_id (primary key) und channel_id eines Servers für das Senden von anderen Maimais
+    sub_names
+    eine Liste aller Subreddits für das Senden der anderen Maimais
 
 Routine: 
 
-Der Pi sollte alle 24h einmal neu gestartet werden (Cronjob eignet sich hierfür).
-Um den Bot automatisch zu starten folgende Befehle ausführen:
+    Der Pi sollte alle 24h einmal neu gestartet werden (Cronjob eignet sich hierfür).
+    Um den Bot automatisch zu starten folgende Befehle ausführen:
 
-sudo nano /etc/profile
+    sudo nano /etc/profile
 
-Jetzt öffnet sich ein Editor.
-Bis zum Ende der Datei Scrollen und folgenden Code hinzufügen:
+    Jetzt öffnet sich ein Editor.
+    Bis zum Ende der Datei Scrollen und folgenden Code hinzufügen:
 
-sleep 60    | 60 Sekunden warten, bis sich der Pi mit dem Netzwerk verbunden hat.
-cd "Pfad_zu_meiner_main_bot.py_Datei"
-sudo python3 main_bot.py &
+    sleep 60    | 60 Sekunden warten, bis sich der Pi mit dem Netzwerk verbunden hat.
+    cd "Pfad_zu_meiner_main_bot.py_Datei"
+    sudo python3 main_bot.py &
 
-Dem & Zeichen kommt hier eine besondere Bedeutung zu. Es ist also essenziell wichtig, dass es dort steht.
-Es sorgt nämlich dafür, dass der Bot im Hintergrund ausgeführt wird, denn wenn dies nicht passiert und der Bot im Vordergrund ausgeführt wird,
-führt dies dazu, dass der Pi seinen Bootvorgang nicht fortsetzt und dadurch UNBENUTZBAR wird.
+    Dem & Zeichen kommt hier eine besondere Bedeutung zu. Es ist also essenziell wichtig, dass es dort steht.
+    Es sorgt nämlich dafür, dass der Bot im Hintergrund ausgeführt wird, denn wenn dies nicht passiert und der Bot im Vordergrund ausgeführt wird,
+    führt dies dazu, dass der Pi seinen Bootvorgang nicht fortsetzt und dadurch UNBENUTZBAR wird.
 
 Für Fragen gerne auf GitHub bei mir melden :)
