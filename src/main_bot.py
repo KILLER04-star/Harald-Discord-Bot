@@ -580,7 +580,7 @@ class MyClient(discord.Client):
     def ping(self):
         embed = discord.Embed(title=responds[75], color=discord.colour.Color.magenta(),
                               url=bot_link, description=responds[76])
-        embed.add_field(name=responds[75], value=responds[77] + str(client.latency * 1000) + " ms.")
+        embed.add_field(name=responds[75], value=responds[77] + str(round((client.latency * 1000), 2)) + " ms.")
         embed.set_author(name=responds[26])
         embed.set_footer(text=responds[29])
         return embed
@@ -860,7 +860,7 @@ class MyClient(discord.Client):
         ids.append(server_id)
         return ids
 
-    async def check_date(self):
+    async def check_date(self): #checks if it is wednesday and controls the sending of the other memes
         global sent_available
         day = (datetime.datetime.today().weekday())
         minute = datetime.datetime.today().minute
@@ -869,15 +869,15 @@ class MyClient(discord.Client):
 
         if str(day) == str(int(int(trigger_day) - 1)) and sent_available:
             isWednesday = True
-            await self.send_meme()
+            await self.send_meme() #it's Wednesday ma dudes
             sent_available = False
 
         elif str(day) != str(int(int(trigger_day) - 1)):
-            isWednesday = False
+            isWednesday = False #reset values
             sent_available = True
             self.reset_server_status()
 
-        if minute % 50 == 0 and minute > 0:
+        if minute % 50 == 0 and minute > 0: #sends two memes every hour
             index = 0
             while index <= 2:
                 index = index + 1
@@ -885,14 +885,14 @@ class MyClient(discord.Client):
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 
-    def isAdmin(self, user):
+    def isAdmin(self, user): #Checks if the user has the admin-role of the server
         return str(user.guild_permissions) == "<Permissions value=2147483647>"
 
-    def encode(self, text):
+    def encode(self, text): #base64 encode
         bytes = base64.b64encode(str(text).encode("utf-8"))
         return str(bytes, "utf-8")
 
-    def decode(self, text):
+    def decode(self, text): #base64 decode
         bytes = base64.b64decode(str(text).encode("utf-8"))
         return str(bytes, "utf-8")
 
@@ -917,90 +917,89 @@ async def _help(ctx):
     await ctx.send(embed=MyClient.help(MyClient))
 
 
-@slash.slash(name="help_mittwoch",description=descriptions[1])
-async def _help_mittwoch(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="help_mittwoch", description=descriptions[1])
+async def _help_mittwoch(ctx):
     await ctx.send(embed=MyClient.help_mittwoch(MyClient))
 
 
-@slash.slash(name="help_roulette",description=descriptions[2])
-async def _help_roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="help_roulette", description=descriptions[2])
+async def _help_roulette(ctx):
     await ctx.send(embed=MyClient.help_roulette(MyClient))
 
 
-@slash.slash(name="help_koz",description=descriptions[3])
-async def _help_koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="help_koz", description=descriptions[3])
+async def _help_koz(ctx):
     await ctx.send(embed=MyClient.help_koz(MyClient))
 
 
-@slash.slash(name="roulette",description=descriptions[4])
-async def _roulette(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="roulette", description=descriptions[4])
+async def _roulette(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="private_hilfe",description=descriptions[5])
-async def _private_hilfe(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="private_hilfe", description=descriptions[5])
+async def _private_hilfe(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="bot_mittwoch_fire",description=descriptions[6])
-async def _bot_mittwoch_fire(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="bot_mittwoch_fire", description=descriptions[6])
+async def _bot_mittwoch_fire(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="setzkanal",description=descriptions[7])
-async def _setzkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="setzkanal", description=descriptions[7])
+async def _setzkanal(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="delkanal",description=descriptions[8])
-async def _delkanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="delkanal", description=descriptions[8])
+async def _delkanal(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="z",description=descriptions[9])
-async def _z(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="z", description=descriptions[9])
+async def _z(ctx):
     await ctx.send(embed=MyClient.z(MyClient))
 
 
-@slash.slash(name="koz",description=descriptions[10])
-
-async def _koz(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="koz", description=descriptions[10])
+async def _koz(ctx):
     print(f"I got you, you said !")
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="about",description=descriptions[11])
-async def _about(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="about", description=descriptions[11])
+async def _about(ctx):
     await ctx.send(embed=MyClient.about(MyClient))
 
 
-@slash.slash(name="kanal",description=descriptions[12])
-async def _kanal(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="kanal", description=descriptions[12])
+async def _kanal(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="show_commands",description=descriptions[13])
-async def _show_commands(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="show_commands", description=descriptions[13])
+async def _show_commands(ctx):
     await ctx.send(MyClient.show_commands(MyClient))
 
 
-@slash.slash(name="setz_webhook",description=descriptions[14])
-async def _setz_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="setz_webhook", description=descriptions[14])
+async def _setz_webhook(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="del_webhook",description=descriptions[15])
-async def _del_webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="del_webhook", description=descriptions[15])
+async def _del_webhook(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="webhook",description=descriptions[16])
-async def _webhook(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="webhook", description=descriptions[16])
+async def _webhook(ctx):
     await ctx.send("Hier ist noch Baustelle :)", file=discord.File('../rsc/baustelle.jpg'))
 
 
-@slash.slash(name="ping",description=descriptions[17])
-async def _ping(ctx):  # Defines a new "context" (ctx) command called "ping."
+@slash.slash(name="ping", description=descriptions[17])
+async def _ping(ctx):
     await ctx.send(embed=MyClient.ping(MyClient))
 
 client.run(discord_token)
