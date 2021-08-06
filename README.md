@@ -100,5 +100,57 @@ Funktionen:
         "$about" : Zeigt Informationen über den Bot und den Entwickler.
         "$ping" : Zeigt die Latenz des Bots an.
 
+Aufsetzen des Bots auf einem RaspBerry Pi: 
+    Software-Anforderungen:
+    Python Version 3.7, oder höher
+    Cronjob
 
+    Bibliotheken: 
+        Asyncio, für das Zeitmanagement
+        Sqlite3, für die korrekte Speicherung der Daten (Serverids und Channelids)
+        Praw, für die Reddit-Anbindung
+        Discord.py für die Verwendung von Discord-Funktionen
+        Discord_slash für die Verwendung von Discord Slash Commands
+    
+    Es wird empfohlen, pip für die Installation der Bibliotheken zu verwenden.
 
+Versteckte Ordner und Dateien: 
+    Aufgrund der Sicherheit wurden einige Dateien und Ordner nicht in die Versionskontrolle eingebunden.
+    Dazu zählen:
+    Ordner: log
+    Dateien im Ordner: "errorlog.txt" | Eine Datei, in die der Bot alle Laufzeitfehler einschließlich Zeit-und Datumsstempel schreibt.
+    Ordner: private
+    Dateien:
+    author.txt : Die Datei enthält den Namen und Diskriminator des Discord-Accounts des Programmierers.
+    keys.txt: Die Datei enthält das Bot-Token.
+    praw.ini: Die Datei enthält sämtliche Reddit-Keys.
+    Info.db: Datenbankdatei für die Selbstverwaltung des Bots.
+
+Datenbankstruktur:
+Tabellen:
+Info:
+enthält server_id (primary key) und channel_id eines Servers für das Senden des Mittwoch-Maimais
+Status
+enthält server_id (primary key), Status des Mittwoch-Maimais und Notizen (z.B.: Fehler beim Senden, letzte Sendezeit)
+Webhook-Channels 
+enthält server_id (primary key) und channel_id eines Servers für das Senden von anderen Maimais
+sub_names
+eine Liste aller Subreddits für das Senden der anderen Maimais
+
+Der Pi sollte alle 24h einmal neu gestartet werden (Cronjob eignet sich hierfür).
+Um den Bot automatisch zu starten folgende Befehle ausführen:
+
+sudo nano /etc/profile
+
+Jetzt öffnet sich ein Editor.
+Bis zum Ende der Datei Scrollen und folgenden Code hinzufügen:
+
+sleep 60    | 60 Sekunden warten, bis sich der Pi mit dem Netzwerk verbunden hat.
+cd "Pfad_zu_meiner_main_bot.py_Datei"
+sudo python3 main_bot.py &
+
+Dem & Zeichen kommt hier eine besondere Bedeutung zu. Es ist also essenziell wichtig, dass es dort steht.
+Es sorgt nämlich dafür, dass der Bot im Hintergrund ausgeführt wird, denn wenn dies nicht passiert und der Bot im Vordergrund ausgeführt wird,
+führt dies dazu, dass der Pi seinen Bootvorgang nicht fortsetzt und dadurch UNBENUTZBAR wird.
+
+Für Fragen gerne auf GitHub bei mir melden :)
