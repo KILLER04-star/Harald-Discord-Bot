@@ -5,6 +5,7 @@ import random
 import sqlite3
 
 import datetime
+import time
 
 from sqlite3 import Error
 
@@ -32,6 +33,9 @@ global bot_error_link
 bot_error_link = "https://github.com/KILLER04-star/Harald-Discord-Bot/issues"
 global bot_author_link
 bot_author_link = "https://github.com/KILLER04-star"
+
+global sending_meme
+sending_meme = False
 
 class MyClient(discord.Client):
     # Login
@@ -69,6 +73,7 @@ class MyClient(discord.Client):
 
     global subs
     subs = []
+    global sub_data
 
     async def on_ready(self):
         print("Ich habe mich eingeloggt. Beep Bop.")
@@ -80,6 +85,37 @@ class MyClient(discord.Client):
         global trigger_day
         trigger_day = 3
         print("The bot will be triggered on the " + str(trigger_day) + ". day of the week.")
+        sub_names = self.get_sub_names()
+        global sub_data
+        sub_data = self.get_data("Webhook_Channels")
+        index = 0
+        global reddit, sub
+        subs = []
+        range = random.randint(0, 27)
+
+        while index < range:
+            subs.append(reddit.subreddit(
+                str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
+                                                                                                 "").replace(
+                    " ", "")))
+
+            sub = random.choice(subs)
+
+            index = index + 1
+
+
+
+
+        global isWednesday
+        try:
+            if isWednesday:
+                sub_names.append("ich_iel")
+                sub_names.append("de")
+            else:
+                sub_names.remove("ich_iel")
+                sub_names.remove("de")
+        except Exception as e:
+            self.log_error(e, "")
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
 
@@ -753,40 +789,15 @@ class MyClient(discord.Client):
         return c.fetchall()
 
     async def webhook(self):
-        data = self.get_data("Webhook_Channels")
+        sub_range = random.randint(1, 1000)
 
-        sub_names = self.get_sub_names()
+        start_time = time.time()*1000
+        top = sub.top(limit=sub_range)
+        print(top)
 
-        index = 0
-        global reddit
-        subs = []
-        range =  random.randint(0, 27)
-        while index < range:
-            subs.append(reddit.subreddit(
-                str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
-                                                                                                 "").replace(
-                    " ", "")))
-
-            sub = random.choice(subs)
-
-            index = index + 1
-
-        top = sub.top(limit=1000)
         allsubs = []
-
         for submission in top:
             allsubs.append(submission)
-
-        global isWednesday
-        try:
-            if isWednesday:
-                sub_names.append("ich_iel")
-                sub_names.append("de")
-            else:
-                sub_names.remove("ich_iel")
-                sub_names.remove("de")
-        except Exception as e:
-            self.log_error(e, "")
         randomsub = random.choice(allsubs)
 
         if not self.is_image(randomsub.url):
@@ -794,17 +805,19 @@ class MyClient(discord.Client):
             allowed = False
         else:
             allowed = True
+
+        print("Loading Done! \nNeeded "+ str(time.time()*1000-start_time)+" ms")
         if allowed:
             name = randomsub.title
             url = randomsub.url
             print(url)
-            for i in data:
+            global sub_data
+            for i in sub_data:
                 try:
                     info = i
                     channel_id = int(
                         self.decode(str(info).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
                     channel = client.get_channel(channel_id)
-
 
                     em = discord.Embed(
                         title=name,
@@ -870,12 +883,19 @@ class MyClient(discord.Client):
             isWednesday = False #reset values
             sent_available = True
             self.reset_server_status()
-
-        if minute % 50 == 0 and minute > 0: #sends two memes every hour
-            index = 0
-            while index <= 2:
-                index = index + 1
-                await self.webhook()
+        global sending_meme
+        if minute % 2 == 0 and minute > 0 : #sends two memes every hour
+            start_time = time.time()*1000
+            if not sending_meme:
+                index = 0
+                sending_meme = True
+                while index <= 2:
+                    print(sending_meme)
+                    index = index + 1
+                    await self.webhook()
+            print("Needed: "+str(time.time()*1000-start_time))
+        else:
+            sending_meme = False
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 
