@@ -1,5 +1,5 @@
 import random
-import errorlog
+from src import errorlog
 
 import discord
 responds = open("../rsc/responds.txt", 'r', encoding="utf8").read().split(";")
