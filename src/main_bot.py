@@ -1,22 +1,20 @@
 import asyncio
-
-import discord
+import base64
+# from discord_slash.utils.manage_commands import create_option
+import configparser
+import datetime
 import random
 import sqlite3
-
-import datetime
+import sys
 import time
-
 from sqlite3 import Error
 
-import base64
-import sys
-
+import discord
+import errorlog
+import games
 import praw
 from discord.ext import commands
-from discord_slash import SlashCommand, SlashContext
-from discord_slash.utils.manage_commands import create_option
-import configparser
+from discord_slash import SlashCommand
 
 global reddit
 global reddit_clientid
@@ -36,6 +34,9 @@ bot_author_link = "https://github.com/KILLER04-star"
 
 global sending_meme
 sending_meme = False
+
+global Games
+
 
 class MyClient(discord.Client):
     # Login
@@ -115,7 +116,7 @@ class MyClient(discord.Client):
                 sub_names.remove("ich_iel")
                 sub_names.remove("de")
         except Exception as e:
-            self.log_error(e, "")
+            errorlog.log_error(e, "")
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
         await asyncio.gather(self.check_date())
 
@@ -150,49 +151,8 @@ class MyClient(discord.Client):
                 await message.channel.send(embed=self.help_koz())
 
             if message.content.startswith("$roulette"):
-                bid = message.content.split('!')[1]
+               await games.roulette(message)
 
-                if bid.lower() == "s":
-                    bid_param = -1
-
-                elif bid.lower() == "r":
-                    bid_param = -2
-
-                else:
-                    try:
-                        bid_param = int(bid)
-                        if bid_param < 0 or bid_param > 36:
-                            bid_param = 0
-                    except Exception as e:
-                        bid_param = -3
-                        self.log_error(e)
-
-                if bid_param == -3:
-                    await message.channel.send(str(responds[4]))
-                    return
-                result = random.randint(0, 36)
-
-                if bid_param == -1:
-                    won = result % 2 == 0 and not result == 0
-
-                elif bid_param == -2:
-                    won = result % 2 == 1
-
-                else:
-                    won = result == bid_param
-
-                if won:
-                    embed = discord.Embed(title=responds[51], colour=discord.Colour(0x50e3c2),
-                                          url=bot_link,
-                                          description=responds[52])
-
-                    embed.set_author(name=responds[26], url=bot_link)
-                    embed.set_footer(text=responds[29])
-
-                    await message.channel.send(embed=embed)
-
-                else:
-                    await message.channel.send(file=discord.File('../rsc/gestern.jpg'))
 
             elif message.content.lower().startswith("$private hilfe"):
                 await message.author.send(str(responds[6]))
@@ -245,7 +205,8 @@ class MyClient(discord.Client):
                             embed.add_field(name=responds[22], value=responds[20])
 
                             await message.channel.send(embed=embed)
-                            self.log_error(e, message.content.lower())
+
+                            errorlog.log_error(e, message.content.lower())
 
                 else:
                     embed = discord.Embed(title=responds[67], colour=discord.Colour(0xd42500),
@@ -268,21 +229,7 @@ class MyClient(discord.Client):
                 await message.channel.send(embed=self.z())
 
             elif message.content.lower().startswith("$koz"):
-                bid = int(message.content.lower().split("!")[1])
-                if bid < 0 or bid > 1:
-                    bid = 0
-                result = random.randint(0, 1)
-
-                if str(bid) == str(result):
-                    embed = discord.Embed(title=responds[51], colour=discord.Colour(0x50e3c2),
-                                          url=bot_link,
-                                          description=responds[52])
-
-                    embed.set_author(name=responds[26], url=bot_link)
-                    embed.set_footer(text=responds[29])
-                    await message.channel.send(embed=embed)
-                else:
-                    await message.channel.send(file=discord.File('../rsc/gestern.jpg'))
+                await games.koz(message)
 
             elif message.content.lower().startswith("$about"):
 
@@ -363,7 +310,7 @@ class MyClient(discord.Client):
                     embed.add_field(name=responds[22], value=responds[20])
 
                     await message.channel.send(embed=embed)
-                    self.log_error(e, message.content.lower())
+                    errorlog.log_error(e, message.content.lower())
 
             elif message.content.lower().startswith("$setz_webhook"):
                 if self.isAdmin(message.author) or str(message.author) == bot_author:
@@ -459,7 +406,7 @@ class MyClient(discord.Client):
                     embed.add_field(name=responds[22], value=responds[20])
 
                     await message.channel.send(embed=embed)
-                    self.log_error(e, message.content.lower())
+                    errorlog.log_error(e, message.content.lower())
             elif message.content.lower().startswith("$ping"):
 
                 await message.channel.send(embed=self.ping())
@@ -481,7 +428,7 @@ class MyClient(discord.Client):
             embed.add_field(name=responds[22], value=responds[20])
 
             await message.channel.send(embed=embed)
-            self.log_error(e, message.content.lower())
+            errorlog.log_error(e, message.content.lower())
 
     async def on_guild_join(self, guild):
         global commands_list
@@ -630,7 +577,7 @@ class MyClient(discord.Client):
             print(sqlite3.version)
             return conn
         except Error as e:
-            self.log_error(e, "")
+            errorlog.log_error(e, "")
         return conn
 
     def create_tables(self, conn):
@@ -643,7 +590,7 @@ class MyClient(discord.Client):
 
             conn.commit()
         except Error as e:
-            self.log_error(e, "")
+            errorlog.log_error(e, "")
 
     def insert_data(self, server_id, channel_id, table, conn):
 
@@ -721,7 +668,7 @@ class MyClient(discord.Client):
                     self.update_server_status(server_id, True, notes)
             except Exception as e:
                 notes = str(e)
-                self.log_error(e, "")
+                errorlog.log_error(e, "")
 
     def update_server_status(self, server_id, status, notes):
         c = conn.cursor()
@@ -760,7 +707,7 @@ class MyClient(discord.Client):
             result = (str(str((c.fetchone())).replace("[", "").replace("(", "").
                           replace("'", "").replace(",", "").replace(")", "").replace("]", "")))
         except Exception as e:
-            self.log_error(e, "")
+            errorlog.log_error(e, "")
         print(str("Result: " + str(result)))
         return result
 
@@ -828,7 +775,7 @@ class MyClient(discord.Client):
                     em.set_image(url=url)
                     await channel.send(embed=em)
                 except Exception as e:
-                    self.log_error(e, "")
+                    errorlog.log_error(e, "")
 
     def get_channel_of_server(self, conn, server_id, table):
         c = conn.cursor()
@@ -884,7 +831,7 @@ class MyClient(discord.Client):
             sent_available = True
             self.reset_server_status()
         global sending_meme
-        if minute % 2 == 0 and minute > 0 : #sends two memes every hour
+        if minute % 50 == 0 and minute > 0 : #sends two memes every hour
             start_time = time.time()*1000
             if not sending_meme:
                 index = 0
@@ -910,15 +857,7 @@ class MyClient(discord.Client):
         bytes = base64.b64decode(str(text).encode("utf-8"))
         return str(bytes, "utf-8")
 
-    def log_error(self, exception, message):
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        message = str("Error_Code: " + str(exception) + "\nError_Type: " + str(exc_type) + "\nLine: " + str(
-            exc_tb.tb_lineno) + "\nMessage: " + str(message))
-        file = open("../log/errorlog.txt", "a+", encoding="utf-8")
-        file.write('\n' + "-------------------------------" + '\n')
-        file.write(str(datetime.datetime.today()) + " " + message)
-        file.close()
-        print(str(datetime.datetime.today()) + " " + message)
+
 
 
 client = MyClient(intents=discord.Intents.all())
