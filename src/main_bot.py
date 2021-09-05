@@ -12,6 +12,7 @@ from sqlite3 import Error
 import discord
 import errorlog
 import games
+import respond_messages
 import praw
 from discord.ext import commands
 from discord_slash import SlashCommand
@@ -104,9 +105,6 @@ class MyClient(discord.Client):
 
             index = index + 1
 
-
-
-
         global isWednesday
         try:
             if isWednesday:
@@ -137,21 +135,20 @@ class MyClient(discord.Client):
             if message.author.bot:
                 return
 
-            if message.content.lower() == commands[0]:  
-                await message.channel.send(embed=self.help())
+            if message.content.lower() == commands[0]:
+                await message.channel.send(embed=respond_messages.help())
 
             if message.content.lower().startswith("$help -mittwoch"):
-                await message.channel.send(embed=self.help_mittwoch())
+                await message.channel.send(embed=respond_messages.help_mittwoch())
 
             if message.content.lower().startswith("$help -roulette"):
-                await message.channel.send(embed=self.help_roulette())
+                await message.channel.send(embed=respond_messages.help_roulette())
 
             if message.content.lower().startswith("$help -koz"):
-
-                await message.channel.send(embed=self.help_koz())
+                await message.channel.send(embed=respond_messages.help_koz())
 
             if message.content.startswith("$roulette"):
-               await games.roulette(message)
+                await games.roulette(message)
 
 
             elif message.content.lower().startswith("$private hilfe"):
@@ -226,14 +223,14 @@ class MyClient(discord.Client):
 
             elif message.content.lower().startswith("$z"):
 
-                await message.channel.send(embed=self.z())
+                await message.channel.send(embed=respond_messages.z())
 
             elif message.content.lower().startswith("$koz"):
                 await games.koz(message)
 
             elif message.content.lower().startswith("$about"):
 
-                await message.channel.send(embed=self.about())
+                await message.channel.send(embed=respond_messages.about())
 
             elif message.content.lower().startswith("$kanal"):
                 channel = self.get_channel_of_server(conn, message.guild.id, "Info")
@@ -256,15 +253,16 @@ class MyClient(discord.Client):
                     embed.set_footer(text=responds[29])
                     await message.channel.send(embed=embed)
 
-            elif message.content.lower().startswith("$send_meme_manual") and bot_author == str(message.author): #triggers the sending of the meme manually
+            elif message.content.lower().startswith("$send_meme_manual") and bot_author == str(
+                    message.author):  # triggers the sending of the meme manually
                 await self.send_meme()
-            elif message.content.lower().startswith("$status") and bot_author == str(message.author): #Sends a message containing the status of the meme-sending of the server
+            elif message.content.lower().startswith("$status") and bot_author == str(
+                    message.author):  # Sends a message containing the status of the meme-sending of the server
                 await message.channel.send(self.get_server_status(message.guild.id))
 
 
             elif message.content.lower().startswith("$show_commands"):
-
-                await message.channel.send(embed=self.show_commands())
+                await message.channel.send(embed=respond_messages.show_commands())
 
             elif message.content.lower().startswith("$delkanal"):
                 try:
@@ -409,7 +407,7 @@ class MyClient(discord.Client):
                     errorlog.log_error(e, message.content.lower())
             elif message.content.lower().startswith("$ping"):
 
-                await message.channel.send(embed=self.ping())
+                await message.channel.send(embed=respond_messages.ping(client=client))
 
 
 
@@ -448,124 +446,6 @@ class MyClient(discord.Client):
             embed.insert_field_at(name=commands[index], value=descriptions[index], index=index)
             index += 1
         await guild.text_channels[0].send(embed=embed)
-
-                                                                        ### start of embed generating ###
-
-    def help(self):
-        global commands_list
-        embed = discord.Embed(title=responds[22], colour=discord.Colour(0xffffff),
-                              url=bot_link,
-                              description=responds[34])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        embed.add_field(name=commands_list[13], value=responds[63])
-        embed.add_field(name=responds[30], value=commands_list[2])
-        embed.add_field(name=responds[31], value=commands_list[1])
-        embed.add_field(name=responds[32], value=commands_list[3])
-        embed.add_field(name=responds[33], value=commands_list[11])
-
-        return embed
-
-    def help_mittwoch(self):
-        global commands_list
-        commands = commands_list
-        embed = discord.Embed(title=responds[35], colour=discord.Colour(0xffffff),
-                              url=bot_link, description=responds[36])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        embed.add_field(name=responds[37],
-                        value=commands[7] + "\n" + responds[38])
-        embed.add_field(name=responds[39],
-                        value=commands[6] + "\n" + responds[40])
-        embed.add_field(name=responds[41],
-                        value=responds[42] + "\n" + responds[43] + commands[12])
-        embed.add_field(name=responds[33], value=commands[11])
-        return embed
-
-    def help_roulette(self):
-        global commands_list
-        commands = commands_list
-        embed = discord.Embed(title=responds[48], colour=discord.Colour(0xffffff),
-                              url=bot_link,
-                              description=responds[49])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        embed.add_field(name=responds[46],
-                        value=commands[4] + "\n" + responds[50])
-        embed.add_field(name=responds[33], value=commands[11])
-        return embed
-    def help_koz(self):
-        global commands_list
-        commands = commands_list
-        embed = discord.Embed(title=responds[44], colour=discord.Colour(0xffffff),
-                              url=bot_link,
-                              description=responds[45])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        embed.add_field(name=responds[46], value=commands[9] + responds[47])
-        embed.add_field(name=responds[33], value=commands[10])
-        return embed
-
-    def z(self):
-
-        file = open("../rsc/quotes.txt", 'r', encoding="utf8")
-        messages = file.read().split(";")
-        val = random.randint(0, len(messages) - 1)
-        embed = discord.Embed(title=responds[53], colour=discord.Colour(0x3400ff),
-                              url=bot_link, description=messages[val])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        return embed
-
-    def about(self):
-        myid = '<@792004795703623691>'
-        embed = discord.Embed(title=responds[33], colour=discord.Colour(0x32ff),
-                              url=bot_link,
-                              description=responds[12] + myid + responds[60])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        embed.add_field(name=responds[58], value=responds[59])
-        embed.add_field(name=responds[56], value=responds[57])
-
-        return embed
-
-    def show_commands(self):
-        global commands_list
-        commands = commands_list
-
-        index = 0
-        embed = discord.Embed(title=responds[61], colour=discord.Colour(0xffffff),
-                              url=bot_link,
-                              description=responds[62])
-
-        embed.set_author(name=responds[26], url=bot_link)
-        embed.set_footer(text=responds[29])
-
-        while index < 18:
-            embed.insert_field_at(name=commands[index], value=descriptions[index], index=index)
-            index += 1
-        return embed
-
-    def ping(self):
-        embed = discord.Embed(title=responds[75], color=discord.colour.Color.magenta(),
-                              url=bot_link, description=responds[76])
-        embed.add_field(name=responds[75], value=responds[77] + str(round((client.latency * 1000), 2)) + " ms.")
-        embed.set_author(name=responds[26])
-        embed.set_footer(text=responds[29])
-        return embed
-                                                                                ### end of embed generating ###
 
     def create_connection(self, db_file):
         # opens a connection to a sqlite-database containing necessary
@@ -738,7 +618,7 @@ class MyClient(discord.Client):
     async def webhook(self):
         sub_range = random.randint(1, 1000)
 
-        start_time = time.time()*1000
+        start_time = time.time() * 1000
         top = sub.top(limit=sub_range)
         print(top)
 
@@ -753,7 +633,7 @@ class MyClient(discord.Client):
         else:
             allowed = True
 
-        print("Loading Done! \nNeeded "+ str(time.time()*1000-start_time)+" ms")
+        print("Loading Done! \nNeeded " + str(time.time() * 1000 - start_time) + " ms")
         if allowed:
             name = randomsub.title
             url = randomsub.url
@@ -814,7 +694,7 @@ class MyClient(discord.Client):
         ids.append(server_id)
         return ids
 
-    async def check_date(self): #checks if it is wednesday and controls the sending of the other memes
+    async def check_date(self):  # checks if it is wednesday and controls the sending of the other memes
         global sent_available
         day = (datetime.datetime.today().weekday())
         minute = datetime.datetime.today().minute
@@ -823,16 +703,16 @@ class MyClient(discord.Client):
 
         if str(day) == str(int(int(trigger_day) - 1)) and sent_available:
             isWednesday = True
-            await self.send_meme() #it's Wednesday ma dudes
+            await self.send_meme()  # it's Wednesday ma dudes
             sent_available = False
 
         elif str(day) != str(int(int(trigger_day) - 1)):
-            isWednesday = False #reset values
+            isWednesday = False  # reset values
             sent_available = True
             self.reset_server_status()
         global sending_meme
-        if minute % 50 == 0 and minute > 0 : #sends two memes every hour
-            start_time = time.time()*1000
+        if minute % 50 == 0 and minute > 0:  # sends two memes every hour
+            start_time = time.time() * 1000
             if not sending_meme:
                 index = 0
                 sending_meme = True
@@ -840,49 +720,48 @@ class MyClient(discord.Client):
                     print(sending_meme)
                     index = index + 1
                     await self.webhook()
-            print("Needed: "+str(time.time()*1000-start_time))
+            print("Needed: " + str(time.time() * 1000 - start_time))
         else:
             sending_meme = False
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 
-    def isAdmin(self, user): #Checks if the user has the admin-role of the server
+    def isAdmin(self, user):  # Checks if the user has the admin-role of the server
         return str(user.guild_permissions) == "<Permissions value=2147483647>"
 
-    def encode(self, text): #base64 encode
+    def encode(self, text):  # base64 encode
         bytes = base64.b64encode(str(text).encode("utf-8"))
         return str(bytes, "utf-8")
 
-    def decode(self, text): #base64 decode
+    def decode(self, text):  # base64 decode
         bytes = base64.b64decode(str(text).encode("utf-8"))
         return str(bytes, "utf-8")
-
-
 
 
 client = MyClient(intents=discord.Intents.all())
 slash = SlashCommand(client, sync_commands=True)
 
-descriptions = open('../rsc/command_description.txt','r',encoding="utf8").read().split(";")
+descriptions = open('../rsc/command_description.txt', 'r', encoding="utf8").read().split(";")
 
-@slash.slash(name="help",description=descriptions[0])
+
+@slash.slash(name="help", description=descriptions[0])
 async def _help(ctx):
-    await ctx.send(embed=MyClient.help(MyClient))
+    await ctx.send(embed=respond_messages.help())
 
 
 @slash.slash(name="help_mittwoch", description=descriptions[1])
 async def _help_mittwoch(ctx):
-    await ctx.send(embed=MyClient.help_mittwoch(MyClient))
+    await ctx.send(embed=respond_messages.help_mittwoch())
 
 
 @slash.slash(name="help_roulette", description=descriptions[2])
 async def _help_roulette(ctx):
-    await ctx.send(embed=MyClient.help_roulette(MyClient))
+    await ctx.send(embed=respond_messages.help_roulette())
 
 
 @slash.slash(name="help_koz", description=descriptions[3])
 async def _help_koz(ctx):
-    await ctx.send(embed=MyClient.help_koz(MyClient))
+    await ctx.send(embed=respond_messages.help_koz())
 
 
 @slash.slash(name="roulette", description=descriptions[4])
@@ -912,7 +791,7 @@ async def _delkanal(ctx):
 
 @slash.slash(name="z", description=descriptions[9])
 async def _z(ctx):
-    await ctx.send(embed=MyClient.z(MyClient))
+    await ctx.send(embed=respond_messages.z())
 
 
 @slash.slash(name="koz", description=descriptions[10])
@@ -923,7 +802,7 @@ async def _koz(ctx):
 
 @slash.slash(name="about", description=descriptions[11])
 async def _about(ctx):
-    await ctx.send(embed=MyClient.about(MyClient))
+    await ctx.send(embed=respond_messages.about())
 
 
 @slash.slash(name="kanal", description=descriptions[12])
@@ -933,7 +812,7 @@ async def _kanal(ctx):
 
 @slash.slash(name="show_commands", description=descriptions[13])
 async def _show_commands(ctx):
-    await ctx.send(MyClient.show_commands(MyClient))
+    await ctx.send(embed=respond_messages.show_commands())
 
 
 @slash.slash(name="setz_webhook", description=descriptions[14])
@@ -953,6 +832,7 @@ async def _webhook(ctx):
 
 @slash.slash(name="ping", description=descriptions[17])
 async def _ping(ctx):
-    await ctx.send(embed=MyClient.ping(MyClient))
+    await ctx.send(embed=respond_messages.ping(client=client))
+
 
 client.run(discord_token)
