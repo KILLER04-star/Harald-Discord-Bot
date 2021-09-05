@@ -157,7 +157,7 @@ class MyClient(discord.Client):
                 await message.author.send(str(responds[6]))
 
             elif message.content.lower().startswith("$bot -mittwoch -fire"):
-                if self.isAdmin(message.author) or str(message.author == bot_author):
+                if security.isAdmin(message.author) or str(message.author == bot_author):
                     await message.channel.send(message.guild.roles[0], file=discord.File('../rsc/mittwoch.png'))
 
             elif message.content.lower().startswith("$setzkanal"):
