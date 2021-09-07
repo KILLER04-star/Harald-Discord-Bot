@@ -3,8 +3,8 @@ import sys
 
 import discord
 
-from src import security
-from src import dbHandler
+import security
+import dbHandler
 
 responds = open("../rsc/responds.txt", 'r', encoding="utf8").read().split(";")
 commands_list = open("../rsc/commands.txt", 'r', encoding="utf8").read().split(";")
@@ -291,6 +291,8 @@ def set_webhook(message, conn):
                         value=responds[72])
 
         return embed
+
+
 def webhook(message, conn, client):
     try:
         channel = dbHandler.get_channel_of_server(conn, message.guild.id, "Webhook_Channels")
@@ -312,7 +314,8 @@ def webhook(message, conn, client):
         embed.add_field(name=responds[22], value=responds[20])
         return embed
 
-def del_webhook(message,conn):
+
+def del_webhook(message, conn):
     try:
         if security.isAdmin(message.author) or str(message.author) == bot_author:
             dbHandler.delete_channel(str(message.guild.id), "Webhook_Channels", conn)

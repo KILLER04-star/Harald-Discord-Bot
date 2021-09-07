@@ -1,8 +1,8 @@
 import datetime
 import sqlite3
 
-from src import security
-from src import errorlog
+import security
+import errorlog
 
 
 def create_connection(db_file):

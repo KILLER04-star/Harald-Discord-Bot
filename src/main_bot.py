@@ -1,20 +1,16 @@
 import asyncio
-import base64
-# from discord_slash.utils.manage_commands import create_option
 import configparser
 import datetime
 import random
-import sqlite3
 import sys
 import time
-from sqlite3 import Error
 
 import discord
 import errorlog
-from src import games
-from src import respond_messages
-from src import security
-from src import dbHandler
+import games
+import respond_messages
+import security
+import dbHandler
 import praw
 from discord.ext import commands
 from discord_slash import SlashCommand

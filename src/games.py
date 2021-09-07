@@ -1,9 +1,12 @@
 import random
-from src import errorlog
+import errorlog
 
 import discord
+
 responds = open("../rsc/responds.txt", 'r', encoding="utf8").read().split(";")
 bot_link = "https://github.com/KILLER04-star/Harald-Discord-Bot"
+
+
 async def roulette(message):
     bid = message.content.split('!')[1]
 
@@ -49,6 +52,7 @@ async def roulette(message):
     else:
         await message.channel.send(file=discord.File('../rsc/gestern.jpg'))
 
+
 async def koz(message):
     bid = int(message.content.lower().split("!")[1])
     if bid < 0 or bid > 1:
@@ -65,5 +69,3 @@ async def koz(message):
         await message.channel.send(embed=embed)
     else:
         await message.channel.send(file=discord.File('../rsc/gestern.jpg'))
-
-
