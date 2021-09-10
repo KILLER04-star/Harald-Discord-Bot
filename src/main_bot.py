@@ -399,6 +399,7 @@ class MyClient(discord.Client):
         minute = datetime.datetime.today().minute
         global trigger_day
         global isWednesday
+        global conn
 
         if str(day) == str(int(int(trigger_day) - 1)) and sent_available:
             isWednesday = True
@@ -422,6 +423,7 @@ class MyClient(discord.Client):
             print("Needed: " + str(time.time() * 1000 - start_time))
         else:
             sending_meme = False
+        dbHandler.delete_channel('', "Info", conn)
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 

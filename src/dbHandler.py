@@ -95,9 +95,9 @@ def delete_channel(server_id, table, conn):
 def delete_server_status(server_id, conn):
     c = conn.cursor()
     server_id = security.encode(server_id)
-    server_id = (server_id,)
+    my_server_id = (server_id,)
 
-    print("Delete Server Status: " + str(datetime.datetime.today()))
-    c.execute('DELETE FROM Status WHERE Server_id=?', server_id)
+    print("Delete Server Status for: " + server_id + " " + str(datetime.datetime.today()))
+    c.execute('DELETE FROM Status WHERE Server_id=?', my_server_id)
 
     conn.commit()
