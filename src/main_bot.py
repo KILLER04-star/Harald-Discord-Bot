@@ -268,6 +268,7 @@ class MyClient(discord.Client):
                     print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
                     self.update_server_status(server_id, True, notes)
+                    sleep(300)
             except Exception as e:
                 notes = str(e)
                 errorlog.log_error(e, "")
@@ -284,7 +285,7 @@ class MyClient(discord.Client):
 
         print(str("Deleting Data for " + security.encode(server_id) + " Time: " + str(datetime.datetime.today())))
 
-        self.set_server_status(const_server_id, status, notes)
+        dbHandler.set_server_status(const_server_id, status, notes, conn)
 
     def get_server_status(self, server_id):
         global conn
@@ -302,20 +303,7 @@ class MyClient(discord.Client):
         print(str("Result: " + str(result)))
         return result
 
-    def set_server_status(self, server_id, status, notes):
-        global conn
 
-        c = conn.cursor()
-
-        server_id = security.encode(server_id)
-
-        values = [server_id, status, notes]
-
-        c.execute('INSERT INTO Status VALUES (?,?,?)', values)
-
-        conn.commit()
-
-        print("Setting Status for: " + server_id + " Time: " + str(datetime.datetime.today()))
 
     def get_sub_names(self):
         global conn
@@ -401,17 +389,23 @@ class MyClient(discord.Client):
         global isWednesday
         global conn
 
-        if str(day) == str(int(int(trigger_day) - 1)) and sent_available:
+        print("Sent? "+str(sent_available))
+        print("Is_Wednesday: "+str(isWednesday))
+        print("Trigger_Day: "+str(trigger_day))
+        if str(day) == str(int(trigger_day - 1)) and sent_available:
             isWednesday = True
             await self.send_meme()  # it's Wednesday ma dudes
             sent_available = False
 
-        elif str(day) != str(int(int(trigger_day) - 1)):
+            print("It's Wednesday ma boys")
+
+        elif str(day) != str(int(trigger_day - 1)):
             isWednesday = False  # reset values
             sent_available = True
             self.reset_server_status()
+            print("It's not Wednesday my boys")
         global sending_meme
-        if minute % 50 == 0 and minute > 0:  # sends two memes every hour
+        if minute % 50 == 0 and minute > 0:  # sends  memes every hour
             start_time = time.time() * 1000
             if not sending_meme:
                 index = 0

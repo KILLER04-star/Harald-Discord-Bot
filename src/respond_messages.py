@@ -161,6 +161,7 @@ def set_channel(message, conn, bot_author):
         server_id = message.guild.id
         if dbHandler.server_already_existing(server_id, "Info", conn) == 0:  # Server is not in DB
             dbHandler.insert_data(str(server_id), str(message.channel.id), "Info", conn)
+            dbHandler.set_server_status(str(server_id), False, "none", conn)
             embed = discord.Embed(title=responds[9], colour=discord.Colour(0xbd002),
                                   url=bot_link,
                                   description=responds[28])

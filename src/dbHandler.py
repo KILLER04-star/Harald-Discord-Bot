@@ -101,3 +101,18 @@ def delete_server_status(server_id, conn):
     c.execute('DELETE FROM Status WHERE Server_id=?', my_server_id)
 
     conn.commit()
+
+
+def set_server_status(server_id, status, notes, conn):
+
+    c = conn.cursor()
+
+    server_id = security.encode(server_id)
+
+    values = [server_id, status, notes]
+
+    c.execute('INSERT INTO Status VALUES (?,?,?)', values)
+
+    conn.commit()
+
+    print("Setting Status for: " + server_id + " Time: " + str(datetime.datetime.today()))
