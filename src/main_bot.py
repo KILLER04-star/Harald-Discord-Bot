@@ -5,25 +5,29 @@ import random
 import sys
 import time
 
+#bot python files
 import discord
 import errorlog
 import games
 import respond_messages
 import security
 import dbHandler
-import praw
+
+import praw #reddit_api
 from discord.ext import commands
 from discord_slash import SlashCommand
 
+#reddit variables
 global reddit
 global reddit_clientid
 global reddit_clientSecret
 global reddit_useragent
 
+#obvius
 global discord_token
-
 from discord import client
 
+#github info
 global bot_link
 bot_link = "https://github.com/KILLER04-star/Harald-Discord-Bot"
 global bot_error_link
@@ -42,6 +46,7 @@ class MyClient(discord.Client):
     config = configparser.ConfigParser()
     config.read('../private/praw.ini')
 
+    #get keys from ini and txt files
     global keys
     keys = open("../private/keys.txt", 'r', encoding="utf8").read().split(";")
     global discord_token
@@ -76,10 +81,10 @@ class MyClient(discord.Client):
     global sub_data
 
     async def on_ready(self):
-        print("Ich habe mich eingeloggt. Beep Bop.")
+        print("Ich habe mich eingeloggt. Beep Bop.") #login successfull
 
         global conn
-        conn = dbHandler.create_connection(r'../private/info.db')
+        conn = dbHandler.create_connection(r'../private/info.db') #open database connection
         dbHandler.create_tables(conn)
         global responds
         global trigger_day
@@ -91,17 +96,17 @@ class MyClient(discord.Client):
         index = 0
         global reddit, sub
         subs = []
-        range = random.randint(0, 27)
+        range = 27
 
-        while index < range:
-            subs.append(reddit.subreddit(
-                str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
-                                                                                                 "").replace(
-                    " ", "")))
-
-            sub = random.choice(subs)
-
-            index = index + 1
+    #    while index < range:
+    #        subs.append(reddit.subreddit(
+    #            str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
+    #                                                                                             "").replace(
+    #                " ", "")))
+    #
+    #        sub = random.choice(subs)
+    #
+    #        index = index + 1
 
         global isWednesday
         try:
@@ -114,7 +119,7 @@ class MyClient(discord.Client):
         except Exception as e:
             errorlog.log_error(e, "")
         await MyClient.change_presence(self, activity=discord.Game(name=responds[64]))
-        await asyncio.gather(self.check_date())
+        await asyncio.gather(self.check_date()) #schedule
 
     # On_Message_Received
     async def on_message(self, message):
@@ -250,30 +255,32 @@ class MyClient(discord.Client):
     async def send_meme(self):
         data = self.get_data("Info")
 
+        print("Send Meme")
+
         notes = str("Last_Updated: " + str(datetime.datetime.today()))
 
         for i in data:
             try:
                 channel_id = int(
-                    security.decode(str(i).replace("'", "").split(",")[1].replace("(", "").replace(")", "")))
+                    security.decode(str(i).replace("'", "").split(",")[1].replace("(", "").replace(")", ""))) #format channel_id from request
 
                 channel = client.get_channel(channel_id)
 
                 server_id = int(
-                    str(security.decode(str(i).replace("'", "").split(",")[0].replace("(", "").replace(")", ""))))
+                    str(security.decode(str(i).replace("'", "").split(",")[0].replace("(", "").replace(")", "")))) #format server id from request
                 guild_role = client.get_guild(server_id).roles[0]
 
                 status = self.get_server_status(server_id=server_id)
                 if status == "0":
                     print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
-                    self.update_server_status(server_id, True, notes)
-                    sleep(300)
+                    await self.update_server_status(server_id, True, notes)
+                    time.sleep(30)
             except Exception as e:
                 notes = str(e)
                 errorlog.log_error(e, "")
 
-    def update_server_status(self, server_id, status, notes):
+    async def update_server_status(self, server_id, status, notes): #update the server status
         c = conn.cursor()
         const_server_id = server_id
         Server_id = security.encode(server_id)
@@ -287,7 +294,7 @@ class MyClient(discord.Client):
 
         dbHandler.set_server_status(const_server_id, status, notes, conn)
 
-    def get_server_status(self, server_id):
+    def get_server_status(self, server_id): #get the status of a server by id
         global conn
         result = False
         c = conn.cursor()
@@ -305,7 +312,10 @@ class MyClient(discord.Client):
 
 
 
-    def get_sub_names(self):
+    def get_sub_names(self):    #get subreddit sub_names
+    #"""
+    #Should be able to add some sort of customizability, like being able to add own subreddits for a specific server
+    #"""
         global conn
 
         c = conn.cursor()
@@ -314,7 +324,7 @@ class MyClient(discord.Client):
 
         return c.fetchall()
 
-    async def webhook(self):
+    async def webhook(self): #send memes from subreddits
         sub_range = random.randint(1, 1000)
 
         start_time = time.time() * 1000
@@ -362,14 +372,14 @@ class MyClient(discord.Client):
         else:
             return False
 
-    def reset_server_status(self):
+    def reset_server_status(self): #resets the status for all servers
         server_ids = self.get_all_servers()
 
         for i in server_ids:
             self.update_server_status(i, "0", "Last_Updated: " + str(datetime.datetime.today()))
             print(str("Updating for: " + security.encode(i) + " Time: " + str(datetime.datetime.today())))
 
-    def get_all_servers(self):
+    def get_all_servers(self): #returns a list of all server_ids
         global conn
         ids = []
         c = conn.cursor()
@@ -427,7 +437,9 @@ slash = SlashCommand(client, sync_commands=True)
 
 descriptions = open('../rsc/command_description.txt', 'r', encoding="utf8").read().split(";")
 
-
+#"""
+#SlashCommands following
+#"""
 @slash.slash(name="help", description=descriptions[0])
 async def _help(ctx):
     await ctx.send(embed=respond_messages.help())
