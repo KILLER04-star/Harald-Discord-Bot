@@ -88,7 +88,7 @@ class MyClient(discord.Client):
         dbHandler.create_tables(conn)
         global responds
         global trigger_day
-        trigger_day = 3
+        trigger_day = 3 #day of the week the bot will be triggered
         print("The bot will be triggered on the " + str(trigger_day) + ". day of the week.")
         sub_names = self.get_sub_names()
         global sub_data
@@ -98,15 +98,15 @@ class MyClient(discord.Client):
         subs = []
         range = 27
 
-    #    while index < range:
-    #        subs.append(reddit.subreddit(
-    #            str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
-    #                                                                                             "").replace(
-    #                " ", "")))
-    #
-    #        sub = random.choice(subs)
-    #
-    #        index = index + 1
+        while index < range: ## TODO: fix this. It needs to be choosen in loop, not startup
+            subs.append(reddit.subreddit(
+                str(sub_names[index]).replace("'", "").replace(",", "").replace("(", "").replace(")",
+                                                                                                 "").replace(
+                    " ", "")))
+
+            sub = random.choice(subs)
+
+            index = index + 1
 
         global isWednesday
         try:
@@ -275,7 +275,7 @@ class MyClient(discord.Client):
                     print("Sending on server: " + str(server_id) + " Time: " + str(datetime.datetime.today()))
                     await channel.send(guild_role, file=discord.File('../rsc/mittwoch.png'))
                     await self.update_server_status(server_id, True, notes)
-                    time.sleep(30)
+                    time.sleep(1)
             except Exception as e:
                 notes = str(e)
                 errorlog.log_error(e, "")
@@ -325,7 +325,8 @@ class MyClient(discord.Client):
         return c.fetchall()
 
     async def webhook(self): #send memes from subreddits
-        sub_range = random.randint(1, 1000)
+        global sub
+        sub_range = ranedom.randint(1, 1000)
 
         start_time = time.time() * 1000
         top = sub.top(limit=sub_range)
@@ -428,6 +429,7 @@ class MyClient(discord.Client):
         else:
             sending_meme = False
         dbHandler.delete_channel('', "Info", conn)
+        dbHandler.delete_channel('', "Status", conn)
         await asyncio.sleep(15)
         await asyncio.gather(self.check_date())
 
